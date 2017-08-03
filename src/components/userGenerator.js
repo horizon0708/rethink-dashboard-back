@@ -28,6 +28,18 @@ export function generatePerson() {
         age: getRandomInt(19, 70),
         sex: getRandomSex(),
         country: getRandomCountry(),
+        joindate: Date.now(),
+        membership: getRandomMembership(),
+    }
+    return fakePerson;
+}
+
+export function generatePastPerson() {
+    const fakePerson = {
+        name: faker.name.findName(),
+        age: getRandomInt(19, 70),
+        sex: getRandomSex(),
+        country: getRandomCountry(),
         joindate: faker.date.past(),
         membership: getRandomMembership(),
     }

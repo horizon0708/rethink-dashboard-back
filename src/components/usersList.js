@@ -1,5 +1,5 @@
 "use strict"
-
+import { Well, Col, Row } from 'react-bootstrap';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,13 +10,23 @@ import { generatePeople} from './userGenerator';
 class UsersList extends React.Component{
     componentDidMount() {
         this.props.getAllUsers();
-        generatePeople(500,2000,10);
+        //generatePeople(500,2000,10);
     }
 
     render(){
-        const usersList = this.props.users.map((x)=> <UserItem key={x.id} name={x.name} id={x.id} />)
+        const usersList = this.props.users.map((x)=> <UserItem 
+            key={x.id} 
+            name={x.name} 
+            id={x.id}
+            sex={x.sex}
+            age={x.age}
+            country={x.country}
+            joindate={x.joindate}
+            membership={x.membership} />)
         return (
-            <div>{usersList} what</div>
+            <Well>
+                {usersList}
+            </Well>
         )
     }
 }
