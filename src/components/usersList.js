@@ -13,14 +13,21 @@ var socket = io('http://localhost:3002/');
 class UsersList extends React.Component {
     constructor(props){
         super(props)
+       
         socket.on('hello', (payload)=>{
             console.log('hi!');
             console.log(socket);
         })
 
-        socket.on('connection', function(socket){
-        console.log('connect sc');
+        socket.on('new_user', ()=>{
+            console.log('renew?');
+            this.props.getAllUsers();
         })
+    }
+
+    test(){
+        console.log('test');        
+        this.props.getAllUsers();
     }
     
     componentDidMount() {

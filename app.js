@@ -39,9 +39,16 @@ app.use('/api', function(req,res){
   apiProxy.web(req, res);
 })
 
+// --- socket io
 app.get('/test', function(req,res){
   io.emit('hello');
   console.log('socket emit');
+  res.json({success: true});
+})
+
+app.get('/renew', function(req,res){
+  io.emit('new_user');
+  console.log('new_user');
   res.json({success: true});
 })
 
