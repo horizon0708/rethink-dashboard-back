@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export function getAllUsers(){
     return (dispatch)=>{
-        axios.get("api/users")
+        axios.get("/api/user")
             .then(response=>{
                 dispatch({type:"GET_ALL_USERS", payload:response.data})
             })

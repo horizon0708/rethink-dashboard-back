@@ -9,18 +9,13 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var index = require('./routes/index');
-var users = require('./routes/users');
-
 var app = express();
-
 
 
 //proxy
 var httpProxy = require('http-proxy');
 const apiProxy = httpProxy.createProxyServer({
-  target: 'http://localhost:4001'
+  target: 'http://localhost:3001'
 });
 
 app.use('/api', function(req,res){

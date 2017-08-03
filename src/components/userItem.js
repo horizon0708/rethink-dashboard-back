@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 //import { addToCart, updateCart } from '../../actions/cartActions';
 
-class userItem extends React.Component{
+class UserItem extends React.Component{
     render(){
         return (
             <div>
                 <h3>{this.props.name}</h3>
-                <p>id: {this.props._id}</p>
+                <p>id: {this.props.id}</p>
             </div>
         )
     }
 }
+
+export default UserItem;

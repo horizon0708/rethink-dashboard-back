@@ -17,6 +17,9 @@ var config = {
     password: 'testjames'
 }
 
+console.log("API!");
+
+
 var connection = null;
 connectToDB();
 function connectToDB(){
@@ -76,11 +79,10 @@ app.delete('/user/:_id', function(req,res){
     })
 })
 
-
 app.listen(3001, function (err) {
   if (err) {
     return console.log(err);
   }
-  console.log('API Server is listening on http://localhost:4001');
+  console.log('API Server is listening on http://localhost:3001');
 })
 module.exports = app;
