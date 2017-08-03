@@ -12,25 +12,38 @@ var bodyParser = require('body-parser');
 var app = express();
 
 //socket.io
-//var server = require('http').Server(app);
-//var io = require('socket.io')(server);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-// io.on('connection', function(socket){
-//   console.log('connect sc');
-  
-// })
+io.on('connection', function(socket){
+  console.log('connect sc');
+})
 
 
 //proxy
 var httpProxy = require('http-proxy');
 const apiProxy = httpProxy.createProxyServer({
-  target: 'http://localhost:3001'
+  target: 'http://localhost:3001',
 });
+
+
+// const wsProxy = httpProxy.createProxyServer({
+//   target: ''
+// })
+
+// http.createServer(function(req,res){
+//   apiProxy.web(req, res)
+// }).listen(80);
 
 app.use('/api', function(req,res){
   apiProxy.web(req, res);
 })
 
+app.get('/test', function(req,res){
+  io.emit('hello');
+  console.log('socket emit');
+  res.json({success: true});
+})
 
 
 app.use(logger('dev'));
@@ -63,4 +76,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+//module.exports = app;
+module.exports ={ app: app, server: server, io: io }
+
+//https://onedesigncompany.com/news/express-generator-and-socket-io

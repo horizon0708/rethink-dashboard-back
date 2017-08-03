@@ -8,14 +8,19 @@ import UserItem from './userItem';
 import { generatePeople } from './userGenerator';
 import io from 'socket.io-client';
 
-//var socket = io.connect('/');
 
+var socket = io('http://localhost:3002/');
 class UsersList extends React.Component {
     constructor(props){
         super(props)
-        // socket.on('hello', (payload)=>{
-        //     console.log('hi!');
-        // })
+        socket.on('hello', (payload)=>{
+            console.log('hi!');
+            console.log(socket);
+        })
+
+        socket.on('connection', function(socket){
+        console.log('connect sc');
+        })
     }
     
     componentDidMount() {

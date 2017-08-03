@@ -3,6 +3,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var app = express();
 var r = require('rethinkdb');
+var axios = require('axios');
+
+//socket
+var _app = require('./app');
+var io = _app.io;
+// --
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -16,8 +22,15 @@ var config = {
     user: 'test',
     password: 'testjames'
 }
+// socket.io--
 
-console.log("API!");
+
+app.get('/socket', function(req,res){
+  axios.get('http://localhost:3002/test');
+  res.json({success: true});
+})
+
+// --
 
 
 var connection = null;
