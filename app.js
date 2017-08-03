@@ -11,6 +11,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var app = express();
 
+//socket.io
+//var server = require('http').Server(app);
+//var io = require('socket.io')(server);
+
+// io.on('connection', function(socket){
+//   console.log('connect sc');
+  
+// })
+
 
 //proxy
 var httpProxy = require('http-proxy');

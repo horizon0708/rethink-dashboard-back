@@ -1,4 +1,4 @@
-import { Panel, Col, Row } from 'react-bootstrap';
+import { Table, Panel, Col, Row } from 'react-bootstrap';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,16 +10,35 @@ class UserItem extends React.Component{
             <Panel>
                 <Row>
                     <Col>
-                        
-                    </Col>
-                    <Col>
                         <h4>{this.props.name}</h4>
-                        <p>id  : {this.props.id} </p>
-                        <p>age : {this.props.age}</p>
-                        <p>sex : {this.props.sex}</p>
-                        <p>country   : {this.props.country}</p>
-                        <p>joined at : {this.props.joindate}</p>
-                        <p>membership: {this.props.membership}</p>
+                        <Table condensed hover>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>{this.props.id}</td>
+                                </tr>
+                                <tr>
+                                    <td>age</td>
+                                    <td>{this.props.age}</td>
+                                </tr>
+                                <tr>
+                                    <td>sex</td>
+                                    <td>{this.props.sex}</td>
+                                </tr>
+                                <tr>
+                                    <td>country</td>
+                                    <td>{this.props.country}</td>
+                                </tr>
+                                <tr>
+                                    <td>joined</td>
+                                    <td>{this.props.joindate}</td>
+                                </tr>
+                                <tr>
+                                    <td>membership</td>
+                                    <td>{this.props.membership}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
                     </Col>
                 </Row>
             </Panel>

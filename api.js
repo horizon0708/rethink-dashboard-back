@@ -35,10 +35,6 @@ function connectToDB(){
 var testDB = r.db('test');
 var testTable = testDB.table('testtable');
 
-app.get('/test', function(req,res){
-    res.json({success: true});
-})
-
 app.post('/user', function(req,res){
     var user = req.body;
     user.createdAt = r.now();
@@ -78,6 +74,7 @@ app.delete('/user/:_id', function(req,res){
         res.json({success: true});
     })
 })
+
 
 app.listen(3001, function (err) {
   if (err) {
