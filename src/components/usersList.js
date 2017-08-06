@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
 import UserItem from './userItem';
-import { generatePeople } from './userGenerator';
+import { generatePeople, generatePerson } from './userGenerator';
 import io from 'socket.io-client';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -59,14 +59,8 @@ class UsersList extends React.Component {
     }
 
     render() {
-        const items = this.state.items.map((item, i) => (
-            <div key={item} onClick={() => this.handleRemove(i)}>
-                {item}
-            </div>
-        ));
-
-        const usersList = this.props.users.map((x, i) => <div><UserItem
-            key={i}
+        const usersList = this.props.users.map((x, i) => <div key={i}><UserItem
+             
             name={x.name}
             id={x.id}
             sex={x.sex}
@@ -76,19 +70,14 @@ class UsersList extends React.Component {
             membership={x.membership} /></div>)
         return (
             <Row >
-                <Col style={{marginTop: "50px"}} xs={12} sm={2}>
+                <Col style={{marginTop: "100px"}} xs={12} sm={2}>
                     <Button onClick={() => generatePeople(2000, 5000, 5)}>
                         Generate People
                     </Button>
-                    <div>
-                        <button onClick={this.handleAdd}>Add Item</button>
-                        <ReactCSSTransitionGroup
-                            transitionName="example"
-                            transitionEnterTimeout={5000}
-                            transitionLeaveTimeout={300}>
-                            {items}
-                        </ReactCSSTransitionGroup>
-                    </div>
+                    <Button onClick={() => generatePerson()}>
+                        Generate A Person
+                    </Button>
+                    
                 </Col>
                 <Col style={{marginTop: "50px"}} xs={12} sm={6} smOffset={2}>
                     <Well>

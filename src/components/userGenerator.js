@@ -28,7 +28,7 @@ export function generatePerson() {
         age: getRandomInt(19, 70),
         sex: getRandomSex(),
         country: getRandomCountry(),
-        joindate: Date.now(),
+        joindate: new Date(),
         membership: getRandomMembership(),
     }
     return fakePerson;
