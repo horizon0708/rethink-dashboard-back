@@ -1,23 +1,33 @@
 "use strict"
-import { applyMiddleware, createStore } from 'redux';
-import reducers from './reducers/index';
 import React from 'react';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
+import Header from './components/header';
+import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 
-import thunk from 'redux-thunk';
-import logger from 'redux-logger';
-import routes from './routes';
+class Main extends React.Component{
+    componentDidMount() {
+    }
+    
+    render(){
+        return(
+            <div>
+                <Header />
+                    {this.props.children}/>
+            </div>
+        );
+    }
+}
 
-// create store
-const middleware = applyMiddleware(thunk, logger);
-const store = createStore(reducers, middleware);
+function mapStateToProps(state){
+    return{
+        // add number of new members as badge?
+    }
+}
 
-const Routes = (
-    <Provider store={store}>
-        {routes}
-    </Provider>
-)
+function mapDispatchToProps(dispatch){
+    return bindActionCreators({
+        
+    }, dispatch)
+}
 
-
-render(Routes, document.getElementById('app'))
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

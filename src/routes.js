@@ -8,10 +8,14 @@ import UsersList from './components/usersList';
 
 const routes = (
         <Router history={browserHistory}>
-            <Route path="/" component={UsersList}>
-                
+            <Route path="/" component={Main}>
+                <IndexRoute component={UsersList} />
+
             </Route>
         </Router>
 )
+
+                // <Route path="/admin" component={BookForm} />
+                // <Route path="/cart" component={Cart} />
 
 export default routes;

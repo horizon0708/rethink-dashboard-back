@@ -75,8 +75,8 @@ class UsersList extends React.Component {
             joindate={x.joindate}
             membership={x.membership} /></div>)
         return (
-            <Row>
-                <Col xs={12} sm={2}>
+            <Row >
+                <Col style={{marginTop: "50px"}} xs={12} sm={2}>
                     <Button onClick={() => generatePeople(2000, 5000, 5)}>
                         Generate People
                     </Button>
@@ -90,7 +90,7 @@ class UsersList extends React.Component {
                         </ReactCSSTransitionGroup>
                     </div>
                 </Col>
-                <Col xs={12} sm={6} smOffset={2}>
+                <Col style={{marginTop: "50px"}} xs={12} sm={6} smOffset={2}>
                     <Well>
                         <ReactCSSTransitionGroup
                             transitionName="example"
