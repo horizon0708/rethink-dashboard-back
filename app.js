@@ -19,6 +19,7 @@ io.on('connection', function(socket){
   console.log('connect sc');
 })
 
+app.use('/css', express.static(__dirname + '/public/stylesheets'));
 
 //proxy
 var httpProxy = require('http-proxy');
@@ -49,7 +50,7 @@ app.get('/test', function(req,res){
 app.get('/renew', function(req,res){
   io.emit('new_user');
   console.log('new_user');
-  res.json({success: true});
+  res.json({success: req.body});
 })
 
 

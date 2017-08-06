@@ -7,29 +7,47 @@ import { getAllUsers } from '../actions/usersActions';
 import UserItem from './userItem';
 import { generatePeople } from './userGenerator';
 import io from 'socket.io-client';
-
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 var socket = io('http://localhost:3002/');
 class UsersList extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-       
-        socket.on('hello', (payload)=>{
+
+        socket.on('hello', (payload) => {
             console.log('hi!');
             console.log(socket);
         })
 
-        socket.on('new_user', ()=>{
+        socket.on('new_user', () => {
             console.log('renew?');
             this.props.getAllUsers();
         })
+        //--
+
+        this.state = { items: ['hello', 'world', 'click', 'me'] };
+        this.handleAdd = this.handleAdd.bind(this);
     }
 
-    test(){
-        console.log('test');        
+    //--
+    handleAdd() {
+        const newItems = this.state.items.concat([
+            prompt('Enter some text')
+        ]);
+        this.setState({ items: newItems });
+    }
+
+    handleRemove(i) {
+        let newItems = this.state.items.slice();
+        newItems.splice(i, 1);
+        this.setState({ items: newItems });
+    }
+    //--
+    test() {
+        console.log('test');
         this.props.getAllUsers();
     }
-    
+
     componentDidMount() {
         this.props.getAllUsers();
         //generatePeople(500,2000,10);
@@ -41,25 +59,47 @@ class UsersList extends React.Component {
     }
 
     render() {
-        const usersList = this.props.users.map((x) => <UserItem
-            key={x.id}
+        const items = this.state.items.map((item, i) => (
+            <div key={item} onClick={() => this.handleRemove(i)}>
+                {item}
+            </div>
+        ));
+
+        const usersList = this.props.users.map((x, i) => <div><UserItem
+            key={i}
             name={x.name}
             id={x.id}
             sex={x.sex}
             age={x.age}
             country={x.country}
             joindate={x.joindate}
-            membership={x.membership} />)
+            membership={x.membership} /></div>)
         return (
             <Row>
                 <Col xs={12} sm={2}>
-                    <Button onClick={()=>generatePeople(2000,5000,5)}>
+                    <Button onClick={() => generatePeople(2000, 5000, 5)}>
                         Generate People
                     </Button>
+                    <div>
+                        <button onClick={this.handleAdd}>Add Item</button>
+                        <ReactCSSTransitionGroup
+                            transitionName="example"
+                            transitionEnterTimeout={5000}
+                            transitionLeaveTimeout={300}>
+                            {items}
+                        </ReactCSSTransitionGroup>
+                    </div>
                 </Col>
                 <Col xs={12} sm={6} smOffset={2}>
                     <Well>
-                        {usersList}
+                        <ReactCSSTransitionGroup
+                            transitionName="example"
+                            transitionAppear={true}
+                            transitionAppearTimeout={5000}
+                            transitionEnterTimeout={5000}
+                            transitionLeaveTimeout={300}>
+                            {usersList}
+                        </ReactCSSTransitionGroup>
                     </Well>
                 </Col>
             </Row>
