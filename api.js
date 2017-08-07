@@ -42,11 +42,11 @@ connectToDB().then(() => {
         if (err) {
             console.log(err);
         }
-        cursor.each((err,change)=> {
+        cursor.each((err, change) => {
             console.log('changes!');
-        axios.get('http://localhost:3002/renew')
+            axios.get('http://localhost:3002/renew', change)
         })
-        
+
     })
 })
 
@@ -76,21 +76,92 @@ app.post('/user', function (req, res) {
     });
 });
 
-app.get('/user', function (req, res) {
-    testTable.run(connection, function (err, cursor) {
-        if (err) {
-            console.log(err);
+app.get('/user/', function (req, res) {
+    // get one user
+    //maybe better to have filter object?
+    var queryId = req.query.id;
+    var queryOrderRow = req.query.orderrow;
+    var queryOrderBy = req.query.orderby
+    var queryFilterRow = req.query.filterrow;
+    var queryFilterBy = req.query.filterby
+    if (queryId) {
+        testTable.get(queryId).run(connection, function (err, cursor) {
+            if (err) {
+                console.log(err);
+            }
+            res.json(cursor);
+        })
+    } else if ((queryOrderRow && queryOrderBy) || (queryFilterBy && queryFilterRow)) {  
+        let filter = {};
+            if (queryFilterBy && queryFilterRow){
+                filter[queryFilterRow] = queryFilterBy;
+            }
+            console.log(filter);
+        if (queryOrderBy === 'descending') {
+            testTable.orderBy(r.desc(queryOrderRow)).filter(filter).run(connection, function (err, cursor) {
+                if (err) {
+                    console.log(err);
+                }
+                cursor.toArray(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    res.json({
+                        data: result,
+                        number: result.length
+                    });
+                });
+            });
+        } else if (queryOrderBy === 'ascending') {       
+            testTable.orderBy(r.asc(queryOrderRow)).filter(filter).run(connection, function (err, cursor) {
+                if (err) {
+                    console.log(err);
+                }
+                cursor.toArray(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    res.json({
+                        data: result,
+                        number: result.length
+                    });
+                });
+            });
+        } else {
+            testTable.filter(filter).run(connection, function (err, cursor) {
+                if (err) {
+                    console.log(err);
+                }
+                cursor.toArray(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    res.json({
+                        data: result,
+                        number: result.length
+                    });
+                });
+            });
         }
 
-        cursor.toArray(function (err, result) {
+    } else {
+        testTable.run(connection, function (err, cursor) {
             if (err) {
                 console.log(err);
             }
 
-            res.json(result);
+            cursor.toArray(function (err, result) {
+                if (err) {
+                    console.log(err);
+                }
+
+                res.json(result);
+            });
         })
-    })
+    }
 });
+
+
 //add params
 app.get('/userbydate', function (req, res) {
     testTable.orderBy(r.desc('joindate')).run(connection, function (err, cursor) {
