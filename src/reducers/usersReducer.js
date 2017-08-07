@@ -7,6 +7,11 @@ export function usersReducer(state = {users:[{"name": "hey"}]}, action){
                 ...state,
                 users: [...action.payload]
             }
+        case "GET_USER_COUNT":
+            return{
+                ...state,
+                count: action.payload
+            }
     }
     return state;
 }

@@ -124,7 +124,6 @@ app.get('/user/', function (req, res) {
     });
 });
 
-
 //add params
 app.get('/userbydate', function (req, res) {
     testTable.orderBy(r.desc('joindate')).run(connection, function (err, cursor) {

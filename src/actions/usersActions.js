@@ -13,3 +13,9 @@ export function getAllUsers(){
             })
     }
 }
+
+export function getUserCount(){
+    return (dispatch)=>{
+        dispatch({type:"GET_USER_COUNT"})
+    }
+}

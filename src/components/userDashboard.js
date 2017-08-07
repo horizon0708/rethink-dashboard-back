@@ -3,15 +3,42 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-class UserDashboard extends React.Component{
-    
-    
-    render(){
+
+class UserDashboard extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            number: {
+                total: 0,
+                women: 0,
+                male: 0
+            }
+        }
+
+    }
+
+    componentDidMount() {
+
+    }
+
+
+    render() {
         return (
             <div>
-                <p>Total number of users</p>
-                <p>Number of female users:</p>
-                <p>Number of male users:</p>
+                <table>
+                    <tr>
+                        <td>Total number of users</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Number of female users:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Number of male users:</td>
+                        <td></td>
+                    </tr>
+                </table>
             </div>
         )
     }
@@ -27,3 +54,14 @@ export default UserDashboard;
 
 //https://stackoverflow.com/questions/20129236/creating-functions-dynamically-in-js
 
+function mapStateToProps(state) {
+    return {
+        users: state.users.users
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ getAllUsers }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserDashboard);
