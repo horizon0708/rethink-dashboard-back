@@ -84,6 +84,13 @@ app.get('/user/', function (req, res) {
     var queryOrderBy = req.query.orderby
     var queryFilterRow = req.query.filterrow;
     var queryFilterBy = req.query.filterby
+
+    var queryFilter = req.query.filter;
+    //req.query.filter ? queryFilter = JSON.parse(req.query.filter): null;
+    //var teststring = req.query.string;
+    console.log(queryFilter);
+
+
     if (queryId) {
         testTable.get(queryId).run(connection, function (err, cursor) {
             if (err) {
@@ -91,12 +98,36 @@ app.get('/user/', function (req, res) {
             }
             res.json(cursor);
         })
-    } else if ((queryOrderRow && queryOrderBy) || (queryFilterBy && queryFilterRow)) {  
-        let filter = {};
-            if (queryFilterBy && queryFilterRow){
-                filter[queryFilterRow] = queryFilterBy;
+    } else if ((queryOrderRow && queryOrderBy) || queryFilter) {
+
+
+        const splitQueries = queryFilter.split('&');
+        let filterFunc = 'return ';
+        for (var i = 0; i < splitQueries.length; i++) {
+            const splitParam = splitQueries[i].split(['_']);
+            let row = splitParam[0];
+            let op = splitParam[1];
+            let value = null;
+            parseInt(splitParam[2]) ? value = splitParam[2] : value =  `'${splitParam[2]}'`;
+            //let filterInner = "(r.row('" + row + "\')" + "." + op + "(" + value + "))";
+            let filterInner = `(r.row('${row}').${op}(${value}))`;
+            if (i > 0) {
+                filterFunc += '.and';
             }
-            console.log(filter);
+            filterFunc += filterInner;
+        }
+        filterFunc += ';';
+        console.log(filterFunc);
+        const filterArg = new Function('r', filterFunc);
+
+
+
+
+        let filter = {};
+        if (queryFilter) {
+            filter = queryFilter;
+        }
+        console.log(filter);
         if (queryOrderBy === 'descending') {
             testTable.orderBy(r.desc(queryOrderRow)).filter(filter).run(connection, function (err, cursor) {
                 if (err) {
@@ -112,7 +143,7 @@ app.get('/user/', function (req, res) {
                     });
                 });
             });
-        } else if (queryOrderBy === 'ascending') {       
+        } else if (queryOrderBy === 'ascending') {
             testTable.orderBy(r.asc(queryOrderRow)).filter(filter).run(connection, function (err, cursor) {
                 if (err) {
                     console.log(err);
@@ -128,7 +159,7 @@ app.get('/user/', function (req, res) {
                 });
             });
         } else {
-            testTable.filter(filter).run(connection, function (err, cursor) {
+            testTable.filter(filterArg(r)).run(connection, function (err, cursor) {
                 if (err) {
                     console.log(err);
                 }
