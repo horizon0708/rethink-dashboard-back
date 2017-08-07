@@ -77,119 +77,51 @@ app.post('/user', function (req, res) {
 });
 
 app.get('/user/', function (req, res) {
-    // get one user
-    //maybe better to have filter object?
-    var queryId = req.query.id;
-    var queryOrderRow = req.query.orderrow;
-    var queryOrderBy = req.query.orderby
-    var queryFilterRow = req.query.filterrow;
-    var queryFilterBy = req.query.filterby
-
+    var querySort = req.query.sort;
     var queryFilter = req.query.filter;
-    //req.query.filter ? queryFilter = JSON.parse(req.query.filter): null;
-    //var teststring = req.query.string;
-    console.log(queryFilter);
+    let filterFunc = 'return ';
+    let sortFunc = 'return ';
 
-
-    if (queryId) {
-        testTable.get(queryId).run(connection, function (err, cursor) {
-            if (err) {
-                console.log(err);
-            }
-            res.json(cursor);
-        })
-    } else if ((queryOrderRow && queryOrderBy) || queryFilter) {
-
-
+    // generate a function for for .filter()
+    if (queryFilter) {
         const splitQueries = queryFilter.split('&');
-        let filterFunc = 'return ';
         for (var i = 0; i < splitQueries.length; i++) {
-            const splitParam = splitQueries[i].split(['_']);
-            let row = splitParam[0];
-            let op = splitParam[1];
-            let value = null;
-            parseInt(splitParam[2]) ? value = splitParam[2] : value =  `'${splitParam[2]}'`;
-            //let filterInner = "(r.row('" + row + "\')" + "." + op + "(" + value + "))";
-            let filterInner = `(r.row('${row}').${op}(${value}))`;
+            let [row, op, value] = splitQueries[i].split(['_']);
+            value = parseInt(value) ? value : `'${value}'`;
             if (i > 0) {
                 filterFunc += '.and';
             }
-            filterFunc += filterInner;
+            filterFunc += `(r.row('${row}').${op}(${value}))`;
         }
-        filterFunc += ';';
-        console.log(filterFunc);
-        const filterArg = new Function('r', filterFunc);
+    } else { // cannot return undefined
+        filterFunc += '{}'
+    }
+    filterFunc = new Function('r', `${filterFunc};`);
 
+    //  generate a function for .orderBy()
+    if (querySort) {
+        let [row, order] = querySort.split('_');
+        sortFunc += `r.${order}('${row}')`;
+    } else {  //Default behaviour: sort by joindate_ascending
+        sortFunc += `r.asc('joindate')`;
+    }
+    sortFunc = new Function('r', `${sortFunc};`);
 
-
-
-        let filter = {};
-        if (queryFilter) {
-            filter = queryFilter;
+    // run the query to the DB
+    testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).run(connection, function (err, cursor) {
+        if (err) {
+            console.log(err);
         }
-        console.log(filter);
-        if (queryOrderBy === 'descending') {
-            testTable.orderBy(r.desc(queryOrderRow)).filter(filter).run(connection, function (err, cursor) {
-                if (err) {
-                    console.log(err);
-                }
-                cursor.toArray(function (err, result) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    res.json({
-                        data: result,
-                        number: result.length
-                    });
-                });
-            });
-        } else if (queryOrderBy === 'ascending') {
-            testTable.orderBy(r.asc(queryOrderRow)).filter(filter).run(connection, function (err, cursor) {
-                if (err) {
-                    console.log(err);
-                }
-                cursor.toArray(function (err, result) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    res.json({
-                        data: result,
-                        number: result.length
-                    });
-                });
-            });
-        } else {
-            testTable.filter(filterArg(r)).run(connection, function (err, cursor) {
-                if (err) {
-                    console.log(err);
-                }
-                cursor.toArray(function (err, result) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    res.json({
-                        data: result,
-                        number: result.length
-                    });
-                });
-            });
-        }
-
-    } else {
-        testTable.run(connection, function (err, cursor) {
+        cursor.toArray(function (err, result) {
             if (err) {
                 console.log(err);
             }
-
-            cursor.toArray(function (err, result) {
-                if (err) {
-                    console.log(err);
-                }
-
-                res.json(result);
+            res.json({
+                data: result,
+                length: result.length
             });
-        })
-    }
+        });
+    });
 });
 
 
