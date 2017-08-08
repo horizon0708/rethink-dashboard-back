@@ -10,6 +10,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var app = express();
+var requestHandler = require('./requestHandler');
 
 //socket.io
 var server = require('http').Server(app);
@@ -19,7 +20,7 @@ io.on('connection', function(socket){
   console.log('connect sc');
 })
 
-app.use(bodyParser.json());
+
 app.use('/css', express.static(__dirname + '/public/stylesheets'));
 
 //proxy
@@ -32,35 +33,33 @@ const apiProxy = httpProxy.createProxyServer({
 //   target: ''
 // })
 
-// http.createServer(function(req,res){
-//   apiProxy.web(req, res)
-// }).listen(80);
+
 
 app.use('/api', function(req,res){
   apiProxy.web(req, res);
 })
 
 // --- socket io
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.post('/renew', function(req,res){
   //console.log(req);
-  console.log(req.body);
-  io.emit('new_user', {data: 'test'});
+  //console.log(req.body);
+  io.emit('new_user', {x: 'test'});
   console.log('new_user');
   res.json({success: true});
 })
 
 
 app.use(logger('dev'));
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', index);
-// app.use('/users', users);
-app.get('*', function(req,res){
-    res.sendFile(path.resolve(__dirname,'public', 'index.html'))
-})
+app.set('view engine', 'ejs');
+app.use(requestHandler);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -72,11 +71,11 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
+  //res.status(err.status || 500);
   //res.render('error');
 });
 

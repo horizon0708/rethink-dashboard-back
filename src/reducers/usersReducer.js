@@ -1,17 +1,18 @@
 "use strict"
 
-export function usersReducer(state = {users:[]}, action){
+export function usersReducer(state = {users:{all:[]}}, action){
     switch(action.type){
         case "GET_USERS":
             return{
                 ...state,
-                users: [...action.payload]
+                users:{all: [...action.payload]}
             }
         
         case "GET_ALL_USERS":
             return{
                 ...state,
-                users: [...action.payload]
+                users: {all: [...action.payload]},
+                test: "test"
             }
         case "GET_USER_COUNT":
             return{

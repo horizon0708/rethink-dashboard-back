@@ -15,12 +15,12 @@ class UsersList extends React.Component {
         super(props)
         this.state = {
             currentSort: 'joindate',
-            orderBy: 'asc'
+            orderBy: 'desc'
         }
 
-        socket.on('new_user', (data) => {
+        socket.on('new_user', (x) => {
             console.log('renew?');
-            console.log(data);
+            console.log(x);
             let sort = `${this.state.currentSort}_${this.state.orderBy}`;
             this.props.getAllUsers(sort);
         })
@@ -35,7 +35,6 @@ class UsersList extends React.Component {
         })
     }
 
-
     renderCaret(rowname) {
         if (this.state.currentSort !== rowname) {
             return null;
@@ -44,7 +43,8 @@ class UsersList extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getAllUsers();
+        let sort = `${this.state.currentSort}_${this.state.orderBy}`;
+        this.props.getAllUsers(sort);
         //socket.emit('new_client');
     }
 
@@ -53,7 +53,7 @@ class UsersList extends React.Component {
     }
 
     render() {
-        const usersList = this.props.users.map((x, i) => <tr>
+        const usersList = this.props.users.all.map((x, i) => <tr key={i}>
             <td>{x.id}</td>
             <td>{x.name}</td>
             <td style={{ width: '8%' }}>{x.sex}</td>

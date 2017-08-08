@@ -43,9 +43,9 @@ connectToDB().then(() => {
             console.log(err);
         }
         cursor.each((err, change) => {
-            axios.post('http://localhost:3002/renew', change)
-            .then(res=> console.log(change))
-            .catch(error => console.log(error))
+            axios.post('http://localhost:3002/renew')
+            .then(res=> console.log("test"))
+            .catch(error => console.log("axios error"))
         })
 
     })
