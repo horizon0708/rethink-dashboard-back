@@ -43,8 +43,9 @@ connectToDB().then(() => {
             console.log(err);
         }
         cursor.each((err, change) => {
-            console.log('changes!');
-            axios.get('http://localhost:3002/renew', change)
+            axios.post('http://localhost:3002/renew', change)
+            .then(res=> console.log(change))
+            .catch(error => console.log(error))
         })
 
     })
@@ -76,7 +77,7 @@ app.post('/user', function (req, res) {
     });
 });
 
-app.get('/user/', function (req, res) {
+app.get('/user', function (req, res) {
     var querySort = req.query.sort;
     var queryFilter = req.query.filter;
     let filterFunc = 'return ';

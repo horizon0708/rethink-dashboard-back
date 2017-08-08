@@ -1,11 +1,11 @@
 "use strict"
-import { Button, Well, Col, Row } from 'react-bootstrap';
+import { Table, Button, Well, Col, Row } from 'react-bootstrap';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
 import UserItem from './userItem';
-import { generatePeople, generatePerson } from './userGenerator';
+import { generatePeople, postPerson } from './userGenerator';
 import io from 'socket.io-client';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -13,44 +13,38 @@ var socket = io('http://localhost:3002/');
 class UsersList extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            currentSort: 'joindate',
+            orderBy: 'asc'
+        }
 
-        socket.on('hello', (payload) => {
-            console.log('hi!');
-            console.log(socket);
-        })
-
-        socket.on('new_user', () => {
+        socket.on('new_user', (data) => {
             console.log('renew?');
-            this.props.getAllUsers();
+            console.log(data);
+            let sort = `${this.state.currentSort}_${this.state.orderBy}`;
+            this.props.getAllUsers(sort);
         })
-        //--
-
-        this.state = { items: ['hello', 'world', 'click', 'me'] };
-        this.handleAdd = this.handleAdd.bind(this);
     }
 
-    //--
-    handleAdd() {
-        const newItems = this.state.items.concat([
-            prompt('Enter some text')
-        ]);
-        this.setState({ items: newItems });
+    handleHeadClick(rowname) {
+        this.setState({ orderBy: this.state.orderBy === 'asc' ? 'desc' : 'asc' }, () => {
+            this.setState({ currentSort: rowname }, () => {
+                let sort = `${this.state.currentSort}_${this.state.orderBy}`;
+                this.props.getAllUsers(sort);
+            })
+        })
     }
 
-    handleRemove(i) {
-        let newItems = this.state.items.slice();
-        newItems.splice(i, 1);
-        this.setState({ items: newItems });
-    }
-    //--
-    test() {
-        console.log('test');
-        this.props.getAllUsers();
+
+    renderCaret(rowname) {
+        if (this.state.currentSort !== rowname) {
+            return null;
+        }
+        return this.state.orderBy === 'asc' ? <i className="fa fa-caret-up" aria-hidden="true"></i> : <i className="fa fa-caret-down" aria-hidden="true"></i>
     }
 
     componentDidMount() {
         this.props.getAllUsers();
-        //generatePeople(500,2000,10);
         //socket.emit('new_client');
     }
 
@@ -59,39 +53,56 @@ class UsersList extends React.Component {
     }
 
     render() {
-        const usersList = this.props.users.map((x, i) => <div key={i}><UserItem
-             
-            name={x.name}
-            id={x.id}
-            sex={x.sex}
-            age={x.age}
-            country={x.country}
-            joindate={x.joindate}
-            membership={x.membership} /></div>)
+        const usersList = this.props.users.map((x, i) => <tr>
+            <td>{x.id}</td>
+            <td>{x.name}</td>
+            <td style={{ width: '8%' }}>{x.sex}</td>
+            <td className="age" style={{ width: '8%' }}>{x.age}</td>
+            <td style={{ width: '10%' }}>{x.country}</td>
+            <td>{x.joindate}</td>
+            <td>{x.membership}</td>
+        </tr>
+        )
         return (
             <Row >
-                <Col style={{marginTop: "100px"}} xs={12} sm={2}>
+                <Col style={{ marginTop: "100px" }} xs={12} sm={2}>
                     <Button onClick={() => generatePeople(2000, 5000, 5)}>
                         Generate People
                     </Button>
-                    <Button onClick={() => generatePerson()}>
+                    <Button onClick={() => postPerson()}>
                         Generate A Person
                     </Button>
-                    
+
                 </Col>
-                <Col style={{marginTop: "50px"}} xs={12} sm={6} smOffset={2}>
-                    <Well>
-                        <ReactCSSTransitionGroup
+                <Col style={{ marginTop: "50px" }} xs={12} sm={12} >
+
+                    <Table condensed hover striped responsive>
+                        <thead>
+                            <tr>
+                                <th ref="sortId">id</th>
+                                <th onClick={(e) => this.handleHeadClick('name', e)}>name {this.renderCaret('name')}</th>
+                                <th onClick={(e) => this.handleHeadClick('sex', e)}>sex {this.renderCaret('sex')}</th>
+                                <th onClick={(e) => this.handleHeadClick('age', e)}>age {this.renderCaret('age')}</th>
+                                <th onClick={(e) => this.handleHeadClick('country', e)}>country {this.renderCaret('country')}</th>
+                                <th onClick={(e) => this.handleHeadClick('joindate', e)}>joindate {this.renderCaret('joindate')}</th>
+                                <th onClick={(e) => this.handleHeadClick('membership', e)}>membership {this.renderCaret('membership')}</th>
+                            </tr>
+                        </thead>
+                            <ReactCSSTransitionGroup
                             transitionName="example"
                             transitionAppear={true}
                             transitionAppearTimeout={5000}
                             transitionEnterTimeout={5000}
-                            transitionLeaveTimeout={300}>
+                            transitionLeaveTimeout={300}
+                            component="tbody">
                             {usersList}
                         </ReactCSSTransitionGroup>
-                    </Well>
+                    </Table>
+
                 </Col>
             </Row>
+
+
 
 
         )
@@ -109,7 +120,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getAllUsers }, dispatch)
+    return bindActionCreators({ getAllUsers, postPerson }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersList);

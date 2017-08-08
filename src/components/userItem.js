@@ -7,41 +7,15 @@ import { bindActionCreators } from 'redux';
 class UserItem extends React.Component{
     render(){
         return (
-            <Panel>
-                <Row>
-                    <Col>
-                        <h4>{this.props.name}</h4>
-                        <Table condensed hover>
-                            <tbody>
-                                <tr>
-                                    <td>id</td>
-                                    <td>{this.props.id}</td>
-                                </tr>
-                                <tr>
-                                    <td>age</td>
-                                    <td>{this.props.age}</td>
-                                </tr>
-                                <tr>
-                                    <td>sex</td>
-                                    <td>{this.props.sex}</td>
-                                </tr>
-                                <tr>
-                                    <td>country</td>
-                                    <td>{this.props.country}</td>
-                                </tr>
-                                <tr>
-                                    <td>joined</td>
-                                    <td>{this.props.joindate}</td>
-                                </tr>
-                                <tr>
-                                    <td>membership</td>
-                                    <td>{this.props.membership}</td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </Col>
-                </Row>
-            </Panel>
+                <tr>
+                    <td>{this.props.id}</td>
+                    <td>{this.props.name}</td>
+                    <td style={{width: '8%'}}>{this.props.sex}</td>
+                    <td className="age" style={{width: '8%'}}>{this.props.age}</td>                 
+                    <td style={{width: '10%'}}>{this.props.country}</td>
+                    <td>{this.props.joindate}</td>
+                    <td>{this.props.membership}</td>
+                </tr>
         )
     }
 }

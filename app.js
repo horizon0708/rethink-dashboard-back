@@ -19,6 +19,7 @@ io.on('connection', function(socket){
   console.log('connect sc');
 })
 
+app.use(bodyParser.json());
 app.use('/css', express.static(__dirname + '/public/stylesheets'));
 
 //proxy
@@ -26,7 +27,6 @@ var httpProxy = require('http-proxy');
 const apiProxy = httpProxy.createProxyServer({
   target: 'http://localhost:3001',
 });
-
 
 // const wsProxy = httpProxy.createProxyServer({
 //   target: ''
@@ -41,16 +41,12 @@ app.use('/api', function(req,res){
 })
 
 // --- socket io
-app.get('/test', function(req,res){
-  io.emit('hello');
-  console.log('socket emit');
-  res.json({success: true});
-})
-
-app.get('/renew', function(req,res){
-  io.emit('new_user');
+app.post('/renew', function(req,res){
+  //console.log(req);
+  console.log(req.body);
+  io.emit('new_user', {data: 'test'});
   console.log('new_user');
-  res.json({success: req.body});
+  res.json({success: true});
 })
 
 
@@ -81,7 +77,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  //res.render('error');
 });
 
 //module.exports = app;

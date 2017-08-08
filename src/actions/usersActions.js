@@ -2,11 +2,19 @@
 import axios from 'axios';
 
 
-export function getAllUsers(){
+export function getAllUsers(sortOpt, filterOpt){
+    let endpoint = "/api/user";
+    if(sortOpt){
+        endpoint += '?sort='+encodeURIComponent(sortOpt);
+    }
+    if(filterOpt){
+        filterOpt += '&filter='+encodeURIComponent(filterOpt);
+    }
+
     return (dispatch)=>{
-        axios.get("/api/userbydate")
+        axios.get(endpoint)
             .then(response=>{
-                dispatch({type:"GET_ALL_USERS", payload:response.data})
+                dispatch({type:"GET_ALL_USERS", payload:response.data.data})
             })
             .catch(err=>{
                 dispatch({type:"GET_ALL_USERS_REJECTED", payload: err})

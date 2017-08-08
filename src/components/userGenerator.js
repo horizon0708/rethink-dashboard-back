@@ -12,6 +12,10 @@ export function generatePeople(minDelay, maxDelay, repetitions) {
     }, getRandomInt(minDelay,maxDelay))
 }
 
+export function postPerson(){
+    send(generatePerson());
+}
+
 function send(person) { // this deliberately does not use the reducer to simulate rethinkDB changefeed updates.
     axios.post('/api/user', person)
         .then(res => {
