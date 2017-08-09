@@ -1,7 +1,9 @@
 require('babel-core/register')({
   "presets": ["es2015", "react", "stage-1"]
 })
-
+require.extensions['.css'] = () => {
+  return;
+};
 
 var express = require('express');
 var path = require('path');
@@ -14,7 +16,7 @@ var requestHandler = require('./requestHandler');
 
 //socket.io
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server,{origins: "localhost:3002"});
 
 io.on('connection', function(socket){
   console.log('connect sc');
@@ -29,14 +31,12 @@ const apiProxy = httpProxy.createProxyServer({
   target: 'http://localhost:3001',
 });
 
-// const wsProxy = httpProxy.createProxyServer({
-//   target: ''
-// })
-
-
-
 app.use('/api', function(req,res){
   apiProxy.web(req, res);
+})
+
+app.use('/socket.io', function(req,res){
+  apiProxy.web(req,res);
 })
 
 // --- socket io
@@ -44,7 +44,7 @@ app.use('/api', function(req,res){
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.post('/renew', function(req,res){
+app.get('/renew', function(req,res){
   //console.log(req);
   //console.log(req.body);
   io.emit('new_user', {x: 'test'});

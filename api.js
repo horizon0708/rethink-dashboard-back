@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var app = express();
 var r = require('rethinkdb');
 var axios = require('axios');
-
+var waterfall = require('async/waterfall');
 //socket
 var _app = require('./app');
 var io = _app.io;
@@ -44,8 +44,8 @@ connectToDB().then(() => {
         }
         cursor.each((err, change) => {
             axios.post('http://localhost:3002/renew')
-            .then(res=> console.log("test"))
-            .catch(error => console.log("axios error"))
+                .then(res => console.log("test"))
+                .catch(error => console.log("axios error"))
         })
 
     })
@@ -124,6 +124,43 @@ app.get('/user', function (req, res) {
         });
     });
 });
+
+
+app.get('/valuelist', function (req, res) {
+    var uniqueValues = {
+        country: [],
+        membership: []
+    }
+    waterfall([
+        function (callback) {
+            testTable.distinct({ index: 'country' }).run(connection, function (err, cursor) {
+                if (err) { callback(err) };
+                cursor.toArray(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    uniqueValues.country= result;
+                    callback();
+                })
+            });
+        },
+        function (callback) {
+            testTable.distinct({ index: 'membership' }).run(connection, function (err, cursor) {
+                if (err) {callback(err) };
+                cursor.toArray(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    uniqueValues.membership= result;
+                    callback();
+                })
+            });
+        }
+    ], function (err, result) {
+        if (err) { console.log(err); }
+        res.json(uniqueValues);
+    });
+})
 
 //add params
 app.get('/userbydate', function (req, res) {

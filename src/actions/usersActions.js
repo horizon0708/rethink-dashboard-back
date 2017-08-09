@@ -7,10 +7,10 @@ export function getAllUsers(sortOpt, filterOpt){
     if(sortOpt){
         endpoint += '?sort='+encodeURIComponent(sortOpt);
     }
-    if(filterOpt){
-        filterOpt += '&filter='+encodeURIComponent(filterOpt);
+    if(filterOpt !== undefined){
+        endpoint += '&filter='+encodeURIComponent(filterOpt);
     }
-
+    console.log(endpoint);
     return (dispatch)=>{
         axios.get(endpoint)
             .then(response=>{
@@ -19,6 +19,18 @@ export function getAllUsers(sortOpt, filterOpt){
             .catch(err=>{
                 dispatch({type:"GET_ALL_USERS_REJECTED", payload: err})
             })
+    }
+}
+
+export function getUniqueValues(){
+    return dispatch => {
+        axios.get('/api/valuelist')
+        .then(res=>{
+            dispatch({type:"GET_UNIQUE_VALUES", payload:res.data})
+        })
+        .catch(err=>{
+            dispatch({type:"GET_UNIQUE_VALUES_REJECTED", payload: err})
+        })
     }
 }
 

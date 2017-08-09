@@ -1,55 +1,120 @@
 "use strict"
-import { Table, Button, Well, Col, Row } from 'react-bootstrap';
+import { Form, Radio, FormGroup, ControlLabel, FormControl, HelpBlock, Table, Button, Well, Col, Row } from 'react-bootstrap';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getAllUsers } from '../actions/usersActions';
+import { findDOMNode } from 'react-dom';
+import { getUniqueValues, getAllUsers } from '../actions/usersActions';
 import UserItem from './userItem';
 import { generatePeople, postPerson } from './userGenerator';
 import io from 'socket.io-client';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
 var socket = io('http://localhost:3002/');
+
+//
+import 'rc-slider/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
+import Tooltip from 'rc-tooltip';
+import Slider from 'rc-slider';
+
+
 class UsersList extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             currentSort: 'joindate',
-            orderBy: 'desc'
+            orderBy: 'desc',
+            range: [18, 100],
+            filterCountry: 'ALL',
+            filterSex: 'ALL',
+            filterMembership: 'ALL',
+            sortQuery:'',
+            filterQuery:`age_ge_18&age_le_100`
         }
-
         socket.on('new_user', (x) => {
             console.log('renew?');
-            console.log(x);
             let sort = `${this.state.currentSort}_${this.state.orderBy}`;
             this.props.getAllUsers(sort);
         })
+    }
+
+    // --- Lifecycle ---
+    componentDidMount() {
+        let sort = `${this.state.currentSort}_${this.state.orderBy}`;
+        this.setState({sortQuery: sort});
+        this.props.getAllUsers(sort);
+        this.props.getUniqueValues();
+        socket.emit('new_client');
+    }
+
+    componentWillUnmount() {
+        socket.emit('client_exit');
+    }
+
+    // --- Handle ---
+    debugButton() {
+        let filterQuery = `age_ge_${this.state.range[0]}&age_le_${this.state.range[1]}`;
+        this.state.filterSex !== 'ALL' ? filterQuery += `&sex_eq_${this.state.filterSex}` : null;
+        this.state.filterCountry !== 'ALL' ? filterQuery += `&country_eq_${this.state.filterCountry}` : null;
+        this.state.filterMembership !== 'ALL' ? filterQuery += `&membership_eq_${this.state.filterMembership}` : null;
+    }
+
+    handleRange = (value) => {
+        this.setState({ range: value });
     }
 
     handleHeadClick(rowname) {
         this.setState({ orderBy: this.state.orderBy === 'asc' ? 'desc' : 'asc' }, () => {
             this.setState({ currentSort: rowname }, () => {
                 let sort = `${this.state.currentSort}_${this.state.orderBy}`;
-                this.props.getAllUsers(sort);
+                this.props.getAllUsers(sort, this.state.filterQuery);
             })
         })
     }
+    handleSubmit=()=> {
+        let query = `age_ge_${this.state.range[0]}&age_le_${this.state.range[1]}`;
+        this.state.filterSex !== 'ALL' ? query += `&sex_eq_${this.state.filterSex}` : null;
+        this.state.filterCountry !== 'ALL' ? query += `&country_eq_${this.state.filterCountry}` : null;
+        this.state.filterMembership !== 'ALL' ? query += `&membership_eq_${this.state.filterMembership}` : null;
+        this.setState({filterQuery: query})
+        let sortQuery = `${this.state.currentSort}_${this.state.orderBy}`;
+        this.props.getAllUsers(sortQuery, query);
 
+    }
+
+    handleCountrySelect = () => {
+        this.setState({ filterCountry: findDOMNode(this.refs.countrySelect).value });
+    }
+    handleMembershipSelect = () => {
+        this.setState({ filterMembership: findDOMNode(this.refs.membershipSelect).value });
+    }
+    handleSexSelect = () => {
+        this.setState({ filterSex: findDOMNode(this.refs.sexSelect).value });
+    }
+
+    // --- Render ---
     renderCaret(rowname) {
-        if (this.state.currentSort !== rowname) {
+    if (this.state.currentSort !== rowname) {
             return null;
         }
         return this.state.orderBy === 'asc' ? <i className="fa fa-caret-up" aria-hidden="true"></i> : <i className="fa fa-caret-down" aria-hidden="true"></i>
     }
 
-    componentDidMount() {
-        let sort = `${this.state.currentSort}_${this.state.orderBy}`;
-        this.props.getAllUsers(sort);
-        //socket.emit('new_client');
+    renderCountryList() {
+        if (this.props.values) {
+            return this.props.values.country.map((x, i) => {
+                return <option key={i} value={x}>{x}</option>
+            })
+        }
+        return null;
     }
-
-    componentWillUnmount() {
-        //socket.emit('client_exit');
+    renderMembershipList() {
+        if (this.props.values) {
+            return this.props.values.membership.map((x, i) => {
+                return <option key={i} value={x}>{x}</option>
+            })
+        }
+        return null;
     }
 
     render() {
@@ -63,15 +128,71 @@ class UsersList extends React.Component {
             <td>{x.membership}</td>
         </tr>
         )
+
+
+        const wrapperStyle = { margin: 10 };
         return (
             <Row >
-                <Col style={{ marginTop: "100px" }} xs={12} sm={2}>
+                <Col style={{ marginTop: "100px" }} xs={6} sm={6}>
                     <Button onClick={() => generatePeople(2000, 5000, 5)}>
                         Generate People
                     </Button>
                     <Button onClick={() => postPerson()}>
                         Generate A Person
                     </Button>
+
+                </Col>
+                <Col style={{ marginTop: "100px" }} xs={12} sm={3}>
+                    <Form>
+                        <FormGroup controlId="name">
+                            <ControlLabel>Name</ControlLabel>
+                            <FormControl ref="filterName" placeholder="TODO:implement search" />
+                        </FormGroup>
+                    </Form>
+                    <Row>
+                        <Col xs={6} sm={6}>
+                            <FormGroup controlId="formControlsSelect">
+                                <ControlLabel>Sex</ControlLabel>
+                                <FormControl ref="sexSelect" onChange={this.handleSexSelect} componentClass="select" placeholder="ALL">
+                                    <option value="ALL">All</option>
+                                    <option value="F">F</option>
+                                    <option value="F">M</option>
+                                </FormControl>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <p><strong>Age Range</strong> ({this.state.range[0]}-{this.state.range[1]})</p>
+                    <div style={wrapperStyle}>
+
+                        <Range ref='range' onChange={this.handleRange} allowCross={false} min={18} max={100} defaultValue={[18, 100]} tipFormatter={value => `${value}`} />
+                    </div>
+                    <Row>
+                        <Col xs={6} sm={6}>
+                            <FormGroup controlId="formControlsSelect">
+                                <ControlLabel>Country</ControlLabel>
+                                <FormControl ref="countrySelect" onChange={this.handleCountrySelect} componentClass="select" placeholder="ALL">
+                                    <option value="ALL">All</option>
+                                    {this.renderCountryList()}
+                                </FormControl>
+                            </FormGroup>
+                        </Col>
+                        <Col xs={6} sm={6}>
+                            <FormGroup controlId="formControlsSelect">
+                                <ControlLabel>Membership</ControlLabel>
+                                <FormControl ref="membershipSelect" onChange={this.handleMembershipSelect} componentClass="select" placeholder="ALL">
+                                    <option value="ALL">All</option>
+                                    {this.renderMembershipList()}
+                                </FormControl>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Button onClick={this.handleSubmit}>
+                        Filter
+                    </Button>
+                    <Button style={{ alignSelf: "right" }} onClick={() => this.debugButton()}>
+                        Debug
+                    </Button>
+
 
                 </Col>
                 <Col style={{ marginTop: "50px" }} xs={12} sm={12} >
@@ -88,7 +209,7 @@ class UsersList extends React.Component {
                                 <th onClick={(e) => this.handleHeadClick('membership', e)}>membership {this.renderCaret('membership')}</th>
                             </tr>
                         </thead>
-                            <ReactCSSTransitionGroup
+                        <ReactCSSTransitionGroup
                             transitionName="example"
                             transitionAppear={true}
                             transitionAppearTimeout={5000}
@@ -110,17 +231,34 @@ class UsersList extends React.Component {
 }
 
 
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const Range = createSliderWithTooltip(Slider.Range);
+const Handle = Slider.Handle;
 
-
+const handle = (props) => {
+    const { value, dragging, index, ...restProps } = props;
+    return (
+        <Tooltip
+            prefixCls="rc-slider-tooltip"
+            overlay={value}
+            visible={dragging}
+            placement="top"
+            key={index}
+        >
+            <Handle value={value} {...restProps} />
+        </Tooltip>
+    );
+};
 
 function mapStateToProps(state) {
     return {
-        users: state.users.users
+        users: state.users.users,
+        values: state.users.uniqueValues
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getAllUsers, postPerson }, dispatch)
+    return bindActionCreators({ getUniqueValues, getAllUsers, postPerson }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersList);

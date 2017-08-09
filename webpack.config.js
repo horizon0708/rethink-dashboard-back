@@ -9,16 +9,21 @@ module.exports = {
     },
     watch: true,
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['react','es2015','stage-1']
+                    presets: ['react', 'es2015', 'stage-1']
                 }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
+
     },
     devtool: 'inline-source-map'
 }
