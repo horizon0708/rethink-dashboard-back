@@ -63,7 +63,7 @@ class UsersList extends React.Component {
         this.setState({ range: value });
     }
 
-    handleHeadClick(rowname) {
+    handleHeadClick(rowname, rownameTwo) {
         this.setState({ orderBy: this.state.orderBy === 'asc' ? 'desc' : 'asc' }, () => {
             this.setState({ currentSort: rowname }, () => {
                 let sort = `${this.state.currentSort}_${this.state.orderBy}`;
@@ -120,7 +120,7 @@ class UsersList extends React.Component {
     render() {
         const usersList = this.props.users.all.map((x, i) => <tr key={i}>
             <td>{x.id}</td>
-            <td>{x.name}</td>
+            <td>{x.lastname}, {x.firstname}</td>
             <td style={{ width: '8%' }}>{x.sex}</td>
             <td className="age" style={{ width: '8%' }}>{x.age}</td>
             <td style={{ width: '10%' }}>{x.country}</td>
@@ -134,7 +134,7 @@ class UsersList extends React.Component {
         return (
             <Row >
                 <Col style={{ marginTop: "100px" }} xs={6} sm={6}>
-                    <Button onClick={() => generatePeople(2000, 5000, 5)}>
+                    <Button onClick={() => generatePeople(1, 1, 200)}>
                         Generate People
                     </Button>
                     <Button onClick={() => postPerson()}>

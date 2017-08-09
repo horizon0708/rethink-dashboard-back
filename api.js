@@ -43,7 +43,7 @@ connectToDB().then(() => {
             console.log(err);
         }
         cursor.each((err, change) => {
-            axios.post('http://localhost:3002/renew')
+            axios.get('http://localhost:3002/renew')
                 .then(res => console.log("test"))
                 .catch(error => console.log("axios error"))
         })
@@ -102,12 +102,14 @@ app.get('/user', function (req, res) {
     //  generate a function for .orderBy()
     if (querySort) {
         let [row, order] = querySort.split('_');
-        sortFunc += `r.${order}('${row}')`;
+        sortFunc += row === 'name' ? `{index:r.${order}('fullname')}` : `r.${order}('${row}')`;
     } else {  //Default behaviour: sort by joindate_ascending
         sortFunc += `r.asc('joindate')`;
     }
     sortFunc = new Function('r', `${sortFunc};`);
 
+
+    
     // run the query to the DB
     testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).run(connection, function (err, cursor) {
         if (err) {
