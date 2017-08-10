@@ -13,12 +13,8 @@ import routes from './src/routes';
 function handleRender(req, res) {
     axios.get('http://localhost:3002/api/user')
         .then(function (response) {
-            // var myHtml = JSON.stringify(response.data);
-            // res.render('index', {myHtml} )
-
             // Create redux store on server
-            const store = createStore(reducers, { "users":{"users": response.data}});
-
+            const store = createStore(reducers, { "users":{"users":  response.data.data, 'filter':'age_ge_18&age_le_100', 'sort':'joindate_desc'}});
             // get initial state from teh store need to careful ith input validation
             const initialState = JSON.stringify(store.getState()).replace(
                 /<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');

@@ -5,7 +5,7 @@ import faker from 'faker';
 export function generatePeople(minDelay, maxDelay, repetitions) {
     let counter = 0;
     const intervalID = window.setInterval(()=>{
-        send(generatePastPerson());
+        send(generatePerson());
         if(++counter === repetitions){
             window.clearInterval(intervalID);
         }
@@ -27,6 +27,7 @@ function send(person) { // this deliberately does not use the reducer to simulat
 }
 
 export function generatePerson() {
+    
     const fakePerson = {
         firstname: faker.name.firstName(),
         lastname: faker.name.lastName(),
@@ -34,19 +35,23 @@ export function generatePerson() {
         sex: getRandomSex(),
         country: getRandomCountry(),
         joindate: new Date(),
+        lastactive: new Date(),
         membership: getRandomMembership(),
     }
     return fakePerson;
 }
 
 export function generatePastPerson() {
+    const _joindate = faker.date.past();
+    
     const fakePerson = {
         firstname: faker.name.firstName(),
         lastname: faker.name.lastName(),
         age: getRandomInt(19, 70),
         sex: getRandomSex(),
         country: getRandomCountry(),
-        joindate: faker.date.past(),
+        joindate: _joindate,
+        lastactive: faker.date.between(_joindate, new Date()),
         membership: getRandomMembership(),
     }
     return fakePerson;

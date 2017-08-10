@@ -6,6 +6,8 @@ export function getAllUsers(sortOpt, filterOpt){
     let endpoint = "/api/user";
     if(sortOpt){
         endpoint += '?sort='+encodeURIComponent(sortOpt);
+    } else {
+        endpoint += '?sort=joindate_desc';
     }
     if(filterOpt !== undefined){
         endpoint += '&filter='+encodeURIComponent(filterOpt);
@@ -19,6 +21,18 @@ export function getAllUsers(sortOpt, filterOpt){
             .catch(err=>{
                 dispatch({type:"GET_ALL_USERS_REJECTED", payload: err})
             })
+    }
+}
+
+export function updateFilterOpt(filterOpt){
+    return dispatch=>{
+        dispatch({type:"UPDATE_FILTER_OPT", payload: filterOpt});
+    }
+}
+
+export function updateSortOpt(sortOpt){
+    return dispatch=>{
+        dispatch({type:"UPDATE_SORT_OPT", payload: sortOpt});
     }
 }
 

@@ -35,9 +35,7 @@ app.use('/api', function(req,res){
   apiProxy.web(req, res);
 })
 
-app.use('/socket.io', function(req,res){
-  apiProxy.web(req,res);
-})
+
 
 // --- socket io
 
@@ -52,12 +50,12 @@ app.get('/renew', function(req,res){
   res.json({success: true});
 })
 
-
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
 app.use(requestHandler);
+
 
 
 

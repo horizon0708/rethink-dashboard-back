@@ -5,6 +5,8 @@ var app = express();
 var r = require('rethinkdb');
 var axios = require('axios');
 var waterfall = require('async/waterfall');
+var whilst = require('async/whilst');
+//var async = require('async');
 //socket
 var _app = require('./app');
 var io = _app.io;
@@ -36,6 +38,7 @@ app.get('/socket', function (req, res) {
 var connection = null;
 var testDB = r.db('test');
 var testTable = testDB.table('testtable');
+var statsTable = testDB.table('dailyStats');
 
 connectToDB().then(() => {
     testTable.changes().run(connection, function (err, cursor) {
@@ -43,11 +46,12 @@ connectToDB().then(() => {
             console.log(err);
         }
         cursor.each((err, change) => {
+            updateStats();
             axios.get('http://localhost:3002/renew')
-                .then(res => console.log("test"))
-                .catch(error => console.log("axios error"))
+                .then(res => null)
+                .catch(error => console.log("axios error"));
+            
         })
-
     })
 })
 
@@ -62,6 +66,79 @@ function connectToDB() {
     })
 }
 //https://webapplog.com/reactive-web-stack/
+
+app.get('/statstest', function(req,res){
+    var count = 0;
+    async.whilst(
+    function() { return count < 5; },
+    function(callback) {
+        count++;
+        setTimeout(function() {
+            callback(null, count);
+        }, 1000);
+    },
+    function (err, n) {
+        // 5 seconds have passed, n = 5
+        console.log('done');
+    }
+    );
+});
+
+
+function updateStats(){
+    // everytime there is a change in the database, update the stats db
+    // total number,
+    const inputData = {
+        datetime: new Date()
+    }
+    var count = 0;
+    whilst(
+        function(){ return count < queryList.length -1 },
+        function(cb){
+            count++
+            let [row,op,value] = queryList[count].split('_');
+            value = parseInt(value) ? value : `'${value}'`;
+            var query = new Function('r',`return r.row('${row}').${op}(${value});`);
+            
+            testTable.filter(query(r)).count().run(connection,function(err,cursor){
+                if(err){console.log(err)}
+                console.log(cursor);
+                inputData[queryList[count]] = cursor;
+                cb(null);
+            });
+        },
+        function(err){
+            statsTable.insert(inputData).run(connection,function(err, cursor){
+                if (err) { console.log(err); }
+                console.log(`stats updated!`);
+            })
+        }
+    );     
+}
+
+function getCount(query, data, callback){
+    let [row,op,value] = query.split('_');
+    value = parseInt(value) ? value : `'${value}'`;
+    _query = `r.row('${row}').${op}(${value})`;
+    testTable.filter(_query).count().run(connection,function(err,cursor){
+        if(err){console.log(err)}
+        data[query] = cursor;
+        callback();
+    });
+}
+
+const queryList = [
+    'age_ge_18', //all users
+    'sex_eq_M',
+    'sex_eq_F',
+    'age_gt_50',
+    'membership_eq_FREE',
+    'membership_eq_ENTERPRISE',
+    'membership_eq_PRO',
+    'country_eq_UK',
+    'country_eq_NZ',
+    'country_eq_AU',
+]
 
 
 app.post('/user', function (req, res) {

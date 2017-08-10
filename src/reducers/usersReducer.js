@@ -1,6 +1,6 @@
 "use strict"
 
-export function usersReducer(state = {users:{all:[]}}, action){
+export function usersReducer(state = {users:[]}, action){
     switch(action.type){
         case "GET_USERS":
             return{
@@ -11,7 +11,7 @@ export function usersReducer(state = {users:{all:[]}}, action){
         case "GET_ALL_USERS":
             return{
                 ...state,
-                users: {all: [...action.payload]}
+                users: [...action.payload]
             }
         case "GET_USER_COUNT":
             return{
@@ -23,6 +23,17 @@ export function usersReducer(state = {users:{all:[]}}, action){
             return{
                 ...state,
                 uniqueValues: action.payload
+            }
+
+        case "UPDATE_FILTER_OPT":
+            return{
+                ...state,
+                filter: action.payload
+            }
+        case "UPDATE_SORT_OPT":
+            return{
+                ...state,
+                sort: action.payload
             }
     }
     return state;

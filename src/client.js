@@ -10,9 +10,10 @@ import logger from 'redux-logger';
 import routes from './routes';
 
 
-// create store
+//create store
 const middleware = applyMiddleware(thunk, logger);
-const store = createStore(reducers, middleware);
+const initialState = window.INITIAL_STATE;
+const store = createStore(reducers, initialState, middleware);
 
 const Routes = (
     <Provider store={store}>

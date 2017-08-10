@@ -4,12 +4,12 @@ import { render } from 'react-dom';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router'
 
 import Main from './main';
-import UsersList from './components/usersList';
+import UserList from './components/userList';
 
 const routes = (
         <Router history={browserHistory}>
             <Route path="/" component={Main}>
-                <IndexRoute component={UsersList} />
+                <IndexRoute component={UserList} />
 
             </Route>
         </Router>
