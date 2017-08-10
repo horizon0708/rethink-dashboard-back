@@ -3,16 +3,14 @@ import React from 'react';
 import Header from './components/header';
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
+import { getAllUsers } from './actions/usersActions';
 
 class Main extends React.Component{
-    componentDidMount() {
-    }
-    
     render(){
         return(
             <div>
                 <Header />
-                    {this.props.children}/>
+                    {this.props.children}
             </div>
         );
     }

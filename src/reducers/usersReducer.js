@@ -13,11 +13,6 @@ export function usersReducer(state = {users:[]}, action){
                 ...state,
                 users: [...action.payload]
             }
-        case "GET_USER_COUNT":
-            return{
-                ...state,
-                count: action.payload
-            }
 
         case "GET_UNIQUE_VALUES":
             return{

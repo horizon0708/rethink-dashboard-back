@@ -28,7 +28,7 @@ class UserListFilter extends React.Component {
     // --- Lifecycle ---
     componentDidMount() {
         this.props.getUniqueValues();
-        this.props.getAllUsers();
+        
     }
     // --- Handle ---
     debugButton() {

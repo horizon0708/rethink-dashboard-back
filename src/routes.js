@@ -5,17 +5,15 @@ import {Router, Route, IndexRoute, browserHistory} from 'react-router'
 
 import Main from './main';
 import UserList from './components/userList';
+import Dashboard from './components/userDashboard';
 
 const routes = (
         <Router history={browserHistory}>
             <Route path="/" component={Main}>
                 <IndexRoute component={UserList} />
-
+                <Route path="userlist" component={UserList} />
+                <Route path="dashboard" component={Dashboard} />
             </Route>
         </Router>
 )
-
-                // <Route path="/admin" component={BookForm} />
-                // <Route path="/cart" component={Cart} />
-
 export default routes;

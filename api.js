@@ -50,7 +50,15 @@ connectToDB().then(() => {
             axios.get('http://localhost:3002/renew')
                 .then(res => null)
                 .catch(error => console.log("axios error"));
-            
+
+        })
+    });
+    statsTable.changes().run(connection, function (err, cursor) {
+        if (err) { console.log(err) };
+        cursor.each((err, change) => {
+            axios.get('http://localhost:3002/renewstats')
+                .then(res => null)
+                .catch(error => console.log('axios stats error'));
         })
     })
 })
@@ -67,64 +75,67 @@ function connectToDB() {
 }
 //https://webapplog.com/reactive-web-stack/
 
-app.get('/statstest', function(req,res){
+app.get('/statstest', function (req, res) {
     var count = 0;
     async.whilst(
-    function() { return count < 5; },
-    function(callback) {
-        count++;
-        setTimeout(function() {
-            callback(null, count);
-        }, 1000);
-    },
-    function (err, n) {
-        // 5 seconds have passed, n = 5
-        console.log('done');
-    }
+        function () { return count < 5; },
+        function (callback) {
+            count++;
+            setTimeout(function () {
+                callback(null, count);
+            }, 1000);
+        },
+        function (err, n) {
+            // 5 seconds have passed, n = 5
+            console.log('done');
+        }
     );
 });
 
+app.get('/lateststats', function (req, res) {
+    statsTable.orderBy(r.desc('datetime')).limit(1).run(connection, function (err, cursor) {
+        if (err) {
+            console.log(err);
+        }
+        cursor.toArray((err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            res.json(result);
+        });
+    })
+})
 
-function updateStats(){
+
+function updateStats() {
     // everytime there is a change in the database, update the stats db
-    // total number,
     const inputData = {
         datetime: new Date()
     }
     var count = 0;
     whilst(
-        function(){ return count < queryList.length -1 },
-        function(cb){
-            count++
-            let [row,op,value] = queryList[count].split('_');
-            value = parseInt(value) ? value : `'${value}'`;
-            var query = new Function('r',`return r.row('${row}').${op}(${value});`);
+        function () { return count < queryList.length - 1 },
+        function (cb) {
+            let currentQuery = queryList[count];
+            count++;
+            let [row, op, value] = currentQuery.split('_');
             
-            testTable.filter(query(r)).count().run(connection,function(err,cursor){
-                if(err){console.log(err)}
-                console.log(cursor);
-                inputData[queryList[count]] = cursor;
+            value = parseInt(value) ? value : `'${value}'`;
+            var query = new Function('r', `return r.row('${row}').${op}(${value});`);
+
+            testTable.filter(query(r)).count().run(connection, function (err, cursor) {
+                if (err) { console.log(err) }
+                inputData[currentQuery] = cursor;
                 cb(null);
             });
         },
-        function(err){
-            statsTable.insert(inputData).run(connection,function(err, cursor){
+        function (err) {
+            statsTable.insert(inputData).run(connection, function (err, cursor) {
                 if (err) { console.log(err); }
                 console.log(`stats updated!`);
             })
         }
-    );     
-}
-
-function getCount(query, data, callback){
-    let [row,op,value] = query.split('_');
-    value = parseInt(value) ? value : `'${value}'`;
-    _query = `r.row('${row}').${op}(${value})`;
-    testTable.filter(_query).count().run(connection,function(err,cursor){
-        if(err){console.log(err)}
-        data[query] = cursor;
-        callback();
-    });
+    );
 }
 
 const queryList = [
@@ -186,7 +197,7 @@ app.get('/user', function (req, res) {
     sortFunc = new Function('r', `${sortFunc};`);
 
 
-    
+
     // run the query to the DB
     testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).run(connection, function (err, cursor) {
         if (err) {
@@ -218,19 +229,19 @@ app.get('/valuelist', function (req, res) {
                     if (err) {
                         console.log(err);
                     }
-                    uniqueValues.country= result;
+                    uniqueValues.country = result;
                     callback();
                 })
             });
         },
         function (callback) {
             testTable.distinct({ index: 'membership' }).run(connection, function (err, cursor) {
-                if (err) {callback(err) };
+                if (err) { callback(err) };
                 cursor.toArray(function (err, result) {
                     if (err) {
                         console.log(err);
                     }
-                    uniqueValues.membership= result;
+                    uniqueValues.membership = result;
                     callback();
                 })
             });

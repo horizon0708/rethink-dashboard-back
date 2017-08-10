@@ -1,50 +1,65 @@
-import { Table, Panel, Col, Row } from 'react-bootstrap';
+import { Well, Table, Panel, Col, Row } from 'react-bootstrap';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { getAllUsers } from '../actions/usersActions';
 
+import d3 from 'd3';
+//import c3 from 'c3';
+import '../../public/stylesheets/c3.min.css';
 
 class UserDashboard extends React.Component {
     constructor() {
         super();
         this.state = {
-            number: {
-                total: 0,
-                women: 0,
-                male: 0
-            }
+            chart: null
         }
-
+    }
+    debug = () => {
+        this.chart.load({
+            columns: [
+                ['data1', 300, 100, 250, 150, 300, 150, 500],
+                ['data2', 100, 200, 150, 50, 100, 250]
+            ]
+        })
     }
 
     componentDidMount() {
-
+        if (window === undefined) { //need to disable serverside rendering
+            return null;
+        } else {
+            const c3 = require('c3');
+            var self = this;
+            self.chart = c3.generate({
+                bindto: '#chart',
+                data: {
+                    columns: [
+                        ['data1', 30, 200, 100, 400, 150, 250],
+                        ['data2', 50, 20, 10, 40, 15, 25]
+                    ]
+                }
+            });
+        }
     }
-
 
     render() {
         return (
-            <div>
-                <table>
-                    <tr>
-                        <td>Total number of users</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Number of female users:</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Number of male users:</td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
+            <Row style={{ marginTop: '75px' }}>
+                <Col sm={6}>
+                    <Well>
+                        <div id="chart" />
+                    </Well>
+                </Col>
+                <Col sm={6}>
+                    <Well>
+                        <button onClick={this.debug}> debug </button>
+                    </Well>
+                </Col>
+
+            </Row>
         )
     }
 }
-
-export default UserDashboard;
 
 //r.db('test').table('testtable').count();
 //r.db('test').table('testtable').filter({sex: "M"}).count();

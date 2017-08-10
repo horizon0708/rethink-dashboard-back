@@ -1,8 +1,9 @@
 "use strict"
 
-import {combineReducers} from 'redux';
-import {usersReducer} from './usersReducer';
-
+import { combineReducers } from 'redux';
+import { usersReducer } from './usersReducer';
+import { graphReducer } from './graphReducer';
 export default combineReducers({
-    users: usersReducer
+    users: usersReducer,
+    graph: graphReducer
 })
