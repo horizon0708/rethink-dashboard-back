@@ -60,7 +60,7 @@ connectToDB().then(() => {
                 .then(res => null)
                 .catch(error => console.log('axios stats error'));
         })
-    })
+    });
 })
 
 
@@ -114,7 +114,7 @@ function updateStats() {
     }
     var count = 0;
     whilst(
-        function () { return count < queryList.length - 1 },
+        function () { return count < queryList.length },
         function (cb) {
             let currentQuery = queryList[count];
             count++;
@@ -142,7 +142,6 @@ const queryList = [
     'age_ge_18', //all users
     'sex_eq_M',
     'sex_eq_F',
-    'age_gt_50',
     'membership_eq_FREE',
     'membership_eq_ENTERPRISE',
     'membership_eq_PRO',

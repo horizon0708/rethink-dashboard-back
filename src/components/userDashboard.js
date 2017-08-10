@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
+import { updateOneTick  } from '../actions/graphActions';
 
 import d3 from 'd3';
 //import c3 from 'c3';
@@ -16,15 +17,20 @@ class UserDashboard extends React.Component {
         }
     }
     debug = () => {
+        this.props.updateOneTick(this.props.latest);
+        let all = [...this.props.live.age_ge_18];
+        console.log(all);
         this.chart.load({
             columns: [
-                ['data1', 300, 100, 250, 150, 300, 150, 500],
+                ['all', ...all],
                 ['data2', 100, 200, 150, 50, 100, 250]
             ]
         })
     }
 
     componentDidMount() {
+        this.props.updateOneTick(this.props.latest);
+
         if (window === undefined) { //need to disable serverside rendering
             return null;
         } else {
@@ -71,12 +77,13 @@ class UserDashboard extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        users: state.users.users
+        latest: state.graph.latest,
+        live: state.graph.live
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getAllUsers }, dispatch)
+    return bindActionCreators({ updateOneTick }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDashboard);

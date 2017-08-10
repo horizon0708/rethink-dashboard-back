@@ -50,6 +50,11 @@ app.get('/renew', function(req,res){
   res.json({success: true});
 })
 
+app.get('/renewstats', function(req,res){
+  io.emit('new_stats');
+  res.json({success: true});
+})
+
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 

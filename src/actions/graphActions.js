@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-export function UpdateOneTick(latest){
+export function updateOneTick(latest){
     return dispatch => {
         dispatch({type: "UPDATE_ONE_TICK", payload: latest});
     }
 }
 
-export function UpdateLatest(){
+export function updateLatest(){
     return dispatch => {
         axios.get('/api/lateststats')
         .then(res=>{
@@ -15,5 +15,11 @@ export function UpdateLatest(){
         .catch(err=>{
             dispatch({type:"UPDATE_LATEST_FAILED", payload: err})
         })
+    }
+}
+
+export function initialiseArray(latest){
+    return dispatch =>{
+        dispatch({type: "INITIALISE_ARRAY", payload: latest})
     }
 }

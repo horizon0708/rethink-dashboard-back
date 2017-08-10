@@ -8,15 +8,40 @@ import { match, RouterContext } from 'react-router';
 
 import reducers from './src/reducers/index';
 import routes from './src/routes';
-
+import waterfall from 'async/waterfall';
 
 function handleRender(req, res) {
-    axios.get('http://localhost:3002/api/user')
-        .then(function (response) {
-            // Create redux store on server
-            const store = createStore(reducers, { "users":{"users":  response.data.data, 'filter':'age_ge_18&age_le_100', 'sort':'joindate_desc'}});
-            // get initial state from teh store need to careful ith input validation
-            const initialState = JSON.stringify(store.getState()).replace(
+    let userInit, statsInit;
+
+    waterfall([
+        function(cb){
+            axios.get('http://localhost:3002/api/user')
+            .then(function(response){
+                userInit  = {"users":  response.data.data, 'filter':'age_ge_18&age_le_100', 'sort':'joindate_desc'};
+                cb();
+            })
+            .catch(function(err){
+                console.log('error loading initial user data');
+                cb();
+            });
+        },
+        function(cb){
+            axios.get('http://localhost:3002/api/lateststats')
+            .then(function(response){
+                statsInit = {"latest": response.data};
+                cb();
+            })
+            .catch(function(err){
+                console.log('error loading initial stats data');
+                cb();
+            })
+        }
+    ],function(error){
+        const store = createStore(reducers,{
+            "users": userInit,
+            "graph": statsInit
+        });
+        const initialState = JSON.stringify(store.getState()).replace(
                 /<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');
             // implement react rotuer to intercept client requests and define what to do with them
             const Routes = {
@@ -39,12 +64,7 @@ function handleRender(req, res) {
                     res.status(404).send('Not Found')
                 }
             })
-        })
-        .catch(function (err) {
-            console.log('#initial Server-side rendering error', err);
-        })
-
-
+    });
 }
 
 module.exports = handleRender;
