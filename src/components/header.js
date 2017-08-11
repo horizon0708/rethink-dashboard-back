@@ -4,7 +4,7 @@ import { Nav, NavItem, Navbar, Badge } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
-import { updateLatest, initialiseArray } from '../actions/graphActions';
+import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
 
 import io from 'socket.io-client';
 var socket = io('http://localhost:3002/');
@@ -17,8 +17,9 @@ class Header extends React.Component{
             this.props.getAllUsers(this.props.sort, this.props.filter);
             
         })
-        socket.on('new_stats',(x)=>{
-            this.props.updateLatest();
+        socket.on('new_stats',(x)=>{ // doesnt handle very short bursts of data very well
+            //this.props.updateLatest();
+            this.props.updateOneTick();
         })
     }
     componentDidMount() {
@@ -62,7 +63,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({updateLatest, getAllUsers, initialiseArray}, dispatch)
+    return bindActionCreators({updateOneTick, updateLatest, getAllUsers, initialiseArray}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

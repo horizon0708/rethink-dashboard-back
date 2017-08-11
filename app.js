@@ -58,6 +58,7 @@ app.get('/renewstats', function(req,res){
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// disabling serverside rendering for now
 app.set('view engine', 'ejs');
 app.use(requestHandler);
 

@@ -18,12 +18,23 @@ export function graphReducer(state = {}, action) {
             console.log(UpdatedValues);
             const payload = action.payload[0];
             for (var i = 0; i < queryList.length; i++) {
-                console.log(state.live[queryList[i]]);
                 const currentArr = [...state.live[queryList[i]]];
                 const newVal = payload[queryList[i]];
-                UpdatedValues[queryList[i]] = [...currentArr.slice(1), newVal];
+                if (currentArr.length < 30) {
+                    UpdatedValues[queryList[i]] = [...currentArr, newVal];
+                } else {
+                    UpdatedValues[queryList[i]] = [...currentArr.slice(1), newVal];
+                }
+                const timeArr = [...state.live.time];
+                //const newTime = new Date().toTimeString().split(" ")[0];
+                const newTime = new Date().toISOString();
+                if (timeArr.length< 30){
+                    UpdatedValues.time = [...timeArr, newTime];
+                } else {
+                    UpdatedValues.time = [...timeArr.slice(1), newTime];
+                }
+
             }
-            console.log(payload);
             return {
                 ...state,
                 live: {
@@ -35,7 +46,8 @@ export function graphReducer(state = {}, action) {
                     membership_eq_PRO: UpdatedValues.membership_eq_PRO,
                     membership_eq_FREE: UpdatedValues.membership_eq_FREE,
                     sex_eq_M: UpdatedValues.sex_eq_M,
-                    sex_eq_F: UpdatedValues.sex_eq_F
+                    sex_eq_F: UpdatedValues.sex_eq_F,
+                    time: UpdatedValues.time
                 }
             }
         case "UPDATE_LATEST":
@@ -43,19 +55,20 @@ export function graphReducer(state = {}, action) {
                 ...state,
                 latest: action.payload
             }
-        case "INITIALISE_ARRAY":
+        case "INITIALISE_ARRAY": //TODO: fix the array hard code; dont need this, initialise at serverside
             return {
                 ...state,
                 live: {
-                    age_ge_18: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    country_eq_AU: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    country_eq_NZ: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    country_eq_UK: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    membership_eq_ENTERPRISE: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    membership_eq_PRO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    membership_eq_FREE: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    sex_eq_M: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    sex_eq_F: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    age_ge_18: [],
+                    country_eq_AU: [],
+                    country_eq_NZ: [],
+                    country_eq_UK: [],
+                    membership_eq_ENTERPRISE: [],
+                    membership_eq_PRO: [],
+                    membership_eq_FREE: [],
+                    sex_eq_M: [],
+                    sex_eq_F: [],
+                    time: []
                 }
             }
     }

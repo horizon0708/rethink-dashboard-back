@@ -3,7 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
-import { updateOneTick  } from '../actions/graphActions';
+import { updateOneTick } from '../actions/graphActions';
+import moment from 'moment';
 
 import d3 from 'd3';
 //import c3 from 'c3';
@@ -17,21 +18,39 @@ class UserDashboard extends React.Component {
         }
     }
     debug = () => {
-        this.props.updateOneTick(this.props.latest);
+        console.log('debug');
         let all = [...this.props.live.age_ge_18];
-        console.log(all);
+        let pro = [...this.props.live.membership_eq_PRO];
+        let Enterprise = [...this.props.live.membership_eq_ENTERPRISE];
+        let time = [...this.props.live.time].map(x => x = moment(x).format('YYYY-MM-DD HH:mm:ss'));
         this.chart.load({
             columns: [
+                ['x', ...time],
                 ['all', ...all],
-                ['data2', 100, 200, 150, 50, 100, 250]
+                ['Pro', ...pro],
+                ['Enterprise', ...Enterprise]
             ]
         })
+    }
+    componentWillReceiveProps(nextProps) {
+        let all = [...nextProps.live.age_ge_18];
+        let pro = [...nextProps.live.membership_eq_PRO];
+        let Enterprise = [...nextProps.live.membership_eq_ENTERPRISE];
+        let time = [...nextProps.live.time].map(x => x = moment(x).format('YYYY-MM-DD HH:mm:ss'));
+        this.chart.load({
+            columns: [
+                ['x', ...time],
+                ['All', ...all],
+                ['Pro', ...pro],
+                ['Enterprise', ...Enterprise]
+            ]
+        });
     }
 
     componentDidMount() {
         this.props.updateOneTick(this.props.latest);
 
-        if (window === undefined) { //need to disable serverside rendering
+        if (window === undefined) { //c3 does not support serverside rendering
             return null;
         } else {
             const c3 = require('c3');
@@ -39,13 +58,34 @@ class UserDashboard extends React.Component {
             self.chart = c3.generate({
                 bindto: '#chart',
                 data: {
+                    x: 'x',
+                    xFormat: '%Y-%m-%d %H:%M:%S',
                     columns: [
-                        ['data1', 30, 200, 100, 400, 150, 250],
-                        ['data2', 50, 20, 10, 40, 15, 25]
+                        ['x'],
+                        ['All'],
+                        ['Pro'],
+                        ['Enterprise']
                     ]
+                },
+                type: 'area-spline',
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick: {
+                            format: `%H:%M:%S`
+                        }
+                    }
+                },
+                point: {
+                    show: false
                 }
             });
+            //self.timer = setInterval(()=>this.debug(), 2000);
         }
+    }
+
+    componentWillUnmount() {
+        //clearInterval(this.timer);
     }
 
     render() {

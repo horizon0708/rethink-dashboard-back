@@ -2,7 +2,13 @@ import axios from 'axios';
 
 export function updateOneTick(latest){
     return dispatch => {
-        dispatch({type: "UPDATE_ONE_TICK", payload: latest});
+        axios.get('/api/lateststats')
+        .then(res=>{
+            dispatch({type:"UPDATE_ONE_TICK", payload:res.data})
+        })
+        .catch(err=>{
+            dispatch({type:"UPDATE_ONE_TICK_FAILED", payload: err})
+        })
     }
 }
 
