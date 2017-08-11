@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
 import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
 
+
+
 import io from 'socket.io-client';
 var socket = io('http://localhost:3002/');
 
@@ -18,14 +20,14 @@ class Header extends React.Component{
             
         })
         socket.on('new_stats',(x)=>{ // doesnt handle very short bursts of data very well
-            //this.props.updateLatest();
-            this.props.updateOneTick();
+            this.props.updateLatest();
+            this.props.updateOneTick(this.props.latest);
         })
     }
     componentDidMount() {
         socket.emit('new_client');
         this.props.updateLatest();
-        this.props.initialiseArray(this.props.latest);
+        //this.props.initialiseArray(this.props.latest);
     }
 
     componentWillUnmount() {

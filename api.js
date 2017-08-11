@@ -198,7 +198,7 @@ app.get('/user', function (req, res) {
 
 
     // run the query to the DB
-    testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).run(connection, function (err, cursor) {
+    testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).limit(200).run(connection, function (err, cursor) {
         if (err) {
             console.log(err);
         }

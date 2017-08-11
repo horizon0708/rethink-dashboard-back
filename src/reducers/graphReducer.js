@@ -15,18 +15,16 @@ export function graphReducer(state = {}, action) {
                 'country_eq_AU',
             ];
             let UpdatedValues = {};
-            console.log(UpdatedValues);
             const payload = action.payload[0];
             for (var i = 0; i < queryList.length; i++) {
-                const currentArr = [...state.live[queryList[i]]];
-                const newVal = payload[queryList[i]];
+                const currentArr = state.live ? [...state.live[queryList[i]]]: [];
+                const newVal = payload? payload[queryList[i]] : 0;
                 if (currentArr.length < 30) {
                     UpdatedValues[queryList[i]] = [...currentArr, newVal];
                 } else {
                     UpdatedValues[queryList[i]] = [...currentArr.slice(1), newVal];
                 }
-                const timeArr = [...state.live.time];
-                //const newTime = new Date().toTimeString().split(" ")[0];
+                const timeArr = state.live ? [...state.live.time] : [];
                 const newTime = new Date().toISOString();
                 if (timeArr.length< 30){
                     UpdatedValues.time = [...timeArr, newTime];
@@ -70,6 +68,11 @@ export function graphReducer(state = {}, action) {
                     sex_eq_F: [],
                     time: []
                 }
+            }
+        case "GET_PAST_DATA":
+            
+            return{
+
             }
     }
     return state;
