@@ -7,8 +7,6 @@ import _ from 'lodash'
 // title, id, array of [label , query]
 class C3Donut extends React.Component {
     componentWillReceiveProps(nextProps) {
-        //['label', 'query']
-        //console.log(nextProps);
         if (!_.isEqual(this.props.latest, nextProps.latest)) {
             let updatedColumns = this.props.queries.map(x => [x[0], nextProps.latest[0][x[1]]]);
             this.chart.load({
@@ -17,9 +15,8 @@ class C3Donut extends React.Component {
         }
     }
 
-    componentDidMount() {
-        let startColumns = this.props.queries.map(x => [x[0]], this.props.latest[0][x[1]]);
-
+    componentDidMount() {    
+        let startColumns = this.props.queries.map(x => [x[0], this.props.latest[0][x[1]]]);
         if (window === undefined) {
             return null;
         } else {

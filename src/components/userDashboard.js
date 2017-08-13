@@ -1,122 +1,89 @@
-import { Well, Table, Panel, Col, Row } from 'react-bootstrap';
+import { Table, Panel, Col, Row, FormGroup, Checkbox } from 'react-bootstrap';
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { getAllUsers } from '../actions/usersActions';
-import { updateOneTick } from '../actions/graphActions';
-import moment from 'moment';
-
 import C3Donut from './c3Donut';
+import C3RealTime from './c3RealTime';
 import UserGenerateButton from './userGenerateButton';
-import C3UserDonut from './c3UserDonut';
-
-import d3 from 'd3';
-//import c3 from 'c3';
-import '../../public/stylesheets/c3.min.css';
-
 
 class UserDashboard extends React.Component {
-    manualUpdate = () => {
-        this.props.updateOneTick(this.props.latest);
-        let all = [...this.props.live.age_ge_18];
-        let enterprise = [...this.props.live.membership_eq_ENTERPRISE];
-        let premium = [...this.props.live.membership_eq_PRO].map((x,i)=> x + enterprise[i]);        
-        let time = [...this.props.live.time].map(x => x = moment(x).format('YYYY-MM-DD HH:mm:ss'));
-        this.setTick.load({
-            columns: [
-                ['x', ...time],
-                ['all', ...all],
-                ['Premium Users', ...premium]
-            ]
-        })
-    }
-    componentWillReceiveProps(nextProps) {
-
-    }
-
-    componentDidMount() {
-        this.props.updateOneTick(this.props.latest);
-
-        if (window === undefined) {
-            return null;
-        } else {
-            const c3 = require('c3');
-            var self = this;
-            self.setTick = c3.generate({
-                bindto: '#chart_set_tick',
-                data: {
-                    x: 'x',
-                    xFormat: '%Y-%m-%d %H:%M:%S',
-                    columns: [
-                        ['x'],
-                        ['All Users'],
-                        ['Premium Users'],
-                    ],
-                    type: 'area-spline'
-                },
-                
-                axis: {
-                    x: {
-                        type: 'timeseries',
-                        tick: {
-                            format: `%H:%M:%S`
-                        }
-                    }
-                },
-                point: {
-                    show: false
-                }
-            });
-
-            self.timer = setInterval(()=>this.manualUpdate(), 2000);
-        }
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.timer);
-    }
-
     render() {
+
         return (
-            <Row style={{ marginTop: '75px' }}>
-                <Col sm={6}>
-                    <Well>
-                        <div id="chart_set_tick" />
-                    </Well>
-                </Col>
-                <Col sm={6}>
-                    <Well>
-                        <C3UserDonut />
 
-                    </Well>
-                </Col>
-                <Col sm={6}>
-                    <Well>
-                        <C3Donut 
-                        title='User Gender' 
-                        id='GenderDonut' 
-                        queries={[
-                            ['Male', 'sex_eq_M'],
-                            ['Female', 'sex_eq_F']
-                        ]}/>
+                <Row>
+                    <Col xs={12} style={{ marginTop: '75px' }}>
+                        <Row>
+                            <Col xs={12} sm={8}>
+                                <Panel>
+                                    <C3RealTime
+                                        title='Realtime User Number'
+                                        id='realTimeUserNumberMonitor'
+                                        queries={[
+                                            ['Free', 'membership_eq_FREE', false],
+                                            ['Pro', 'membership_eq_PRO', true],
+                                            ['Enterprise', 'membership_eq_ENTERPRISE', true],
+                                            ['All', 'age_ge_18', true],
+                                            ['Male', 'sex_eq_M', false],
+                                            ['Female', 'sex_eq_F', false],
+                                            ['UK', 'country_eq_UK', false],
+                                            ['NZ', 'country_eq_NZ', false],
+                                            ['AU', 'country_eq_AU', false]
+                                        ]}
+                                    />
+                                </Panel>
+                            </Col>
+                            <Col xs={12} sm={4}>
+                                <Panel>
 
-                    </Well>
-                </Col>
-                <UserGenerateButton />
-            </Row>
+                                </Panel>
+                            </Col>
+                        </Row>
+                    </Col>
+
+                    <Col xs={12}>
+                        <Row>
+                            <Col xs={12} sm={4}>
+                                <Panel>
+                                    <C3Donut
+                                        title='User Payment Dist.'
+                                        id='userPaymentDonut'
+                                        queries={[
+                                            ['Free', 'membership_eq_FREE'],
+                                            ['Pro', 'membership_eq_PRO'],
+                                            ['Enterprise', 'membership_eq_ENTERPRISE']
+                                        ]}
+                                    />
+                                </Panel>
+                            </Col>
+                            <Col xs={12} sm={4}>
+                                <Panel>
+                                    <C3Donut
+                                        title='User Gender'
+                                        id='GenderDonut'
+                                        queries={[
+                                            ['Male', 'sex_eq_M'],
+                                            ['Female', 'sex_eq_F']
+                                        ]} />
+                                </Panel>
+                            </Col>
+                            <Col xs={12} sm={4}>
+                                <Panel>
+                                    <C3Donut
+                                        title='User Country Dist.'
+                                        id='userCountryDonut'
+                                        queries={[
+                                            ['NZ', 'country_eq_NZ'],
+                                            ['AU', 'country_eq_AU'],
+                                            ['UK', 'country_eq_UK']
+                                        ]} />
+                                </Panel>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <UserGenerateButton />
+                </Row>
         )
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        latest: state.graph.latest,
-        live: state.graph.live
-    }
-}
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ updateOneTick }, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserDashboard);
+export default UserDashboard;
