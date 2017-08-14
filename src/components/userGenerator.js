@@ -54,7 +54,7 @@ export function toggleMemberships(membership, targetNumber, totalDuration) {
                 })
         },
         (cb) => {
-            difference = userCount - targetNumber;
+            difference =  targetNumber - userCount;
             axios.get(`/api/user?filter=membership_ne_${membership}&sort=age_desc&limit=${difference}`)
                 .then(res => {
                     userIds = res.data.data.map(x => x.id); // store list of ids to convert
