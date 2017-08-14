@@ -7,18 +7,16 @@ import _ from 'lodash'
 // title, id, array of [label , query]
 class C3Donut extends React.Component {
     componentWillReceiveProps(nextProps) {
-        if (this.newUpdate(this.props.queries, nextProps)) {
+        if (this.checkChange(this.props.queries, nextProps)) {
             let updatedColumns = this.props.queries.map(x => [x[0], nextProps.latest[0][x[1]]]);
             this.chart.load({
                 columns: updatedColumns
             })
-        }
-        
-        
+        }       
     }
-    checkQueryChange (arr, nextProps) {
-            for (item in arr){
-                if (this.props.latest[item] !== nextProps.latest){
+    checkChange (arr, nextProps) {
+            for (var item in arr){
+                if (this.props.latest[item[1]] !== nextProps.latest[0][item[1]]){
                     return true;
                 }
             }

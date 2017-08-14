@@ -16,7 +16,7 @@ class UserGenerateButton extends React.Component {
                     <Button onClick={() => postPerson()}>
                         Generate A Person
                     </Button>
-                    <Button onClick={() => toggleMemberships("ENTERPRISE", 200, 20000)}> 
+                    <Button onClick={() => toggleMemberships("ENTERPRISE", 600, 20000)}> 
                         toggleMemberships
                     </Button>
                 </ButtonGroup>        

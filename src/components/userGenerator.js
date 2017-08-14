@@ -39,56 +39,58 @@ function changeMembership(id, membership) {
 }
 
 export function toggleMemberships(membership, targetNumber, totalDuration) {
-    axios.get('/api/lateststats')
-        .then(res => {
-            let count = res.data[0][`membership_eq_${membership}`];
-            let totalRep = targetNumber - count;
-            whilst(
-                () => { //truth test
-                    return count < targetNumber
-                },
-                (callback) => { // function that is iterated
-                    waterfall([
-                        (cb) => {
-                            setTimeout(() => {
-                                cb();
-                            }, totalDuration / totalRep);
-                        },
-                        (cb) => {
-                            axios.get(`/api/user?filter=membership_ne_${membership}&sort=joindate_desc&limit=1`)
-                                .then(res => {
-                                    console.log(res);
-                                    let id = res.data.data[0].id;
-                                    console.log(`got the id ${id}!`);
-                                    cb(null, id);
-                                })
-                                .catch(err => {
-                                    console.log(err);
-                                })
-                        },
-                        (id, cb) => {
-                            axios.post(`/api/user/${id}`, {'membership': membership})
-                                .then(res => {
-                                    console.log(`updated ${id}'s membership to ${membership}`);
-                                    cb()
-                                })
-                                .catch(err => {
-                                    console.log(err);
-                                });
-                        }
-                    ], (err, res) => {
-                        count++;
-                        callback(null);
-                    })
-                },
-                (err, res) => { //result
-                    if(err){console.log(err);}
-                    console.log(`conversion complete`)
+    let userCount, difference;
+    let userIds = [];
+    let index = 0;
+    waterfall([
+        (cb) => {
+            axios.get('/api/lateststats')
+                .then(res => {
+                    userCount = res.data[0][`membership_eq_${membership}`];
+                    cb(null)
                 })
-        })
-        .catch(err => {
-            console.log(err);
-        })
+                .catch(err => {
+                    console.log(err);
+                })
+        },
+        (cb) => {
+            difference = userCount - targetNumber;
+            axios.get(`/api/user?filter=membership_ne_${membership}&sort=age_desc&limit=${difference}`)
+                .then(res => {
+                    userIds = res.data.data.map(x => x.id); // store list of ids to convert
+                    cb(null);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    ], (err, res) => {
+        console.log(`got ids of ${difference} users to process. Starting conversion.`)
+        whilst(
+            () => { //truth test: until userCount reaches the target number
+                return userCount < targetNumber
+            },
+            (callback) => {
+                setTimeout(() => {
+                    let id = userIds[index];
+                    axios.post(`/api/user/${id}`, { 'membership': membership })
+                        .then(res => {
+                            console.log(`updated ${id}'s membership to ${membership}`);
+                            cb()
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                    count++;
+                    index++;
+                    cb();
+                }, totalDuration / difference);
+            },
+            (err, res) => { //result
+                if (err) { console.log(err); }
+                console.log(`conversion complete`)
+            })
+    })
 }
 
 export function generatePerson() {
