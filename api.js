@@ -164,9 +164,23 @@ app.post('/user', function (req, res) {
     });
 });
 
+app.post('/user/:id', (req,res)=> {
+    let userID = req.params.id;
+    let changes = req.body;
+    testTable.get(userID).update(
+        changes
+    ).run(connection, (err, cursor)=>{
+        if(err){
+            console.log(err);
+        }
+       res.json({success : true}) ;
+    });
+});
+
 app.get('/user', function (req, res) {
     var querySort = req.query.sort;
     var queryFilter = req.query.filter;
+    var limit = req.query.limit ? parseInt(req.query.limit): 200;
     let filterFunc = 'return ';
     let sortFunc = 'return ';
 
@@ -198,7 +212,7 @@ app.get('/user', function (req, res) {
 
 
     // run the query to the DB
-    testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).limit(200).run(connection, function (err, cursor) {
+    testTable.orderBy(sortFunc(r)).filter(filterFunc(r)).limit(limit).run(connection, function (err, cursor) {
         if (err) {
             console.log(err);
         }
@@ -268,8 +282,8 @@ app.get('/userbydate', function (req, res) {
     })
 });
 
-app.delete('/user/:_id', function (req, res) {
-    var query = req.params._id;
+app.delete('/user/:id', function (req, res) {
+    var query = req.params.id;
     testTable.get(query).delete().run(connection, function (err, result) {
         if (err) {
             console.log(err);

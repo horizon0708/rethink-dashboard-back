@@ -1,5 +1,5 @@
 import React from 'react';
-import { generatePeople, postPerson } from './userGenerator';
+import { toggleMemberships,generatePeople, postPerson } from './userGenerator';
 import { ButtonGroup ,Well, Col, Button } from 'react-bootstrap';
 
 class UserGenerateButton extends React.Component {
@@ -15,6 +15,9 @@ class UserGenerateButton extends React.Component {
                     </Button>
                     <Button onClick={() => postPerson()}>
                         Generate A Person
+                    </Button>
+                    <Button onClick={() => toggleMemberships("ENTERPRISE", 200, 20000)}> 
+                        toggleMemberships
                     </Button>
                 </ButtonGroup>        
             </Well>

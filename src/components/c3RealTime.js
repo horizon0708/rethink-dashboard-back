@@ -13,7 +13,8 @@ class C3RealTime extends React.Component {
     constructor() {
         super();
         this.state = {
-            showing: []
+            showing: [],
+            time: []
         }
     }
 
@@ -37,12 +38,21 @@ class C3RealTime extends React.Component {
     update = () => {
         this.props.updateOneTick(this.props.latest);
         let updatedColumns = this.state.showing.filter(x => x.show).map(x=> [x.title, ...this.props.live[x.query]]);
-        let time = [...this.props.live.time].map(x => x = moment(x).format('YYYY-MM-DD HH:mm:ss'));
-        this.chart.load({
-            columns: [['x', ...time],
+        //let time = [...this.props.live.time].map(x => x = moment(x).format('YYYY-MM-DD HH:mm:ss'));
+        let newTime;
+        if(this.state.time.length < 30){
+            newTime = [...this.state.time, moment(new Date().toISOString()).format('YYYY-MM-DD HH:mm:ss')]
+        } else {      
+            newTime = [...this.state.time.slice(1), moment(new Date().toISOString()).format('YYYY-MM-DD HH:mm:ss')]
+        }
+        this.setState({time: newTime},()=>{
+            this.chart.load({
+            columns: [['x', ...this.state.time],
             ...updatedColumns
             ]
         });
+        })
+        
     }
     componentDidMount() {
         this.props.updateOneTick(this.props.latest);
