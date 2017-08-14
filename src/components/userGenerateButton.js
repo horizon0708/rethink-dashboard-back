@@ -19,6 +19,9 @@ class UserGenerateButton extends React.Component {
                     <Button onClick={() => toggleMemberships("ENTERPRISE", 600, 20000)}> 
                         toggleMemberships
                     </Button>
+                    <Button onClick={() => toggleMemberships("PRO", 400, 20000)}> 
+                        Increase Pro Users
+                    </Button>
                 </ButtonGroup>        
             </Well>
         )

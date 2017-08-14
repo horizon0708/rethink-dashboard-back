@@ -11,31 +11,49 @@ import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphAc
 import io from 'socket.io-client';
 var socket = io('http://localhost:3002/');
 
-class Header extends React.Component{
-    constructor(props){
+class Header extends React.Component {
+    constructor(props) {
         super(props);
+        this.state = {
+            readyToReceiveNewStats: true,
+            readyToReceiveNewUsers: true
+        }
         socket.on('new_user', (x) => {
             console.log('renew?');
-            this.props.getAllUsers(this.props.sort, this.props.filter);
-            
+            if (this.state.readyToReceiveNewUsers) { 
+                this.props.getAllUsers(this.props.sort, this.props.filter);         
+                this.setState({ readyToReceiveNewUsers: false }, () => {
+                    setTimeout(() => {
+                        this.setState({readyToReceiveNewUsers: true});
+                    }, 2000);
+                });
+            }
         })
-        socket.on('new_stats',(x)=>{ // doesnt handle very short bursts of data very well
-            this.props.updateLatest();
-            this.props.updateOneTick(this.props.latest);
+
+        // Only get the newest data every 2000 ms.
+        // The delay is 2000ms because the realtime graph tickrate is 2000ms. 
+        socket.on('new_stats', (x) => {
+            if (this.state.readyToReceiveNewStats) { 
+                this.props.updateLatest();
+                this.setState({ readyToReceiveNewStats: false }, () => {
+                    setTimeout(() => {
+                        this.setState({readyToReceiveNewStats: true});
+                    }, 2000);
+                });
+            }
         })
     }
     componentDidMount() {
         socket.emit('new_client');
         this.props.updateLatest();
-        //this.props.initialiseArray(this.props.latest);
     }
 
     componentWillUnmount() {
         socket.emit('client_exit');
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <Navbar fixedTop>
                 <Navbar.Header>
                     <Navbar.Brand>
@@ -65,7 +83,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({updateOneTick, updateLatest, getAllUsers, initialiseArray}, dispatch)
+    return bindActionCreators({ updateOneTick, updateLatest, getAllUsers, initialiseArray }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

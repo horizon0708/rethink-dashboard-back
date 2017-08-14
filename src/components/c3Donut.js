@@ -9,14 +9,22 @@ class C3Donut extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.checkChange(this.props.queries, nextProps)) {
             let updatedColumns = this.props.queries.map(x => [x[0], nextProps.latest[0][x[1]]]);
+            console.log('update');
             this.chart.load({
                 columns: updatedColumns
             })
         }       
     }
     checkChange (arr, nextProps) {
-            for (var item in arr){
-                if (this.props.latest[item[1]] !== nextProps.latest[0][item[1]]){
+            for (let item of arr){
+                console.log(arr);
+                console.log(`${this.props.latest[0][item[1]]} and ${nextProps.latest[0][item[1]]}`) //886 and 886
+                console.log(this.props.latest[0][item[1]]); // 886    
+                console.log(nextProps.latest[0][item[1]]); // 886   
+                console.log(this.props.latest[item[1]] // false?...?
+                    === nextProps.latest[0][item[1]]);
+                if (parseInt(this.props.latest[item[1]]) // true?..???
+                    !== parseInt(nextProps.latest[0][item[1]])){
                     return true;
                 }
             }

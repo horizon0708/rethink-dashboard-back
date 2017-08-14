@@ -76,14 +76,13 @@ export function toggleMemberships(membership, targetNumber, totalDuration) {
                     axios.post(`/api/user/${id}`, { 'membership': membership })
                         .then(res => {
                             console.log(`updated ${id}'s membership to ${membership}`);
-                            cb()
                         })
                         .catch(err => {
                             console.log(err);
                         });
-                    count++;
+                    userCount++;
                     index++;
-                    cb();
+                    callback();
                 }, totalDuration / difference);
             },
             (err, res) => { //result
