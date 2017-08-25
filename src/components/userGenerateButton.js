@@ -3,6 +3,13 @@ import { toggleMemberships,generatePeople, postPerson } from './userGenerator';
 import { ButtonGroup ,Well, Col, Button } from 'react-bootstrap';
 
 class UserGenerateButton extends React.Component {
+    constructor(){
+        super();
+        this.state ={
+            increasePro: false
+        }
+    }
+    
     render() {
         return (
             <Well>

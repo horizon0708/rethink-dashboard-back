@@ -18,6 +18,8 @@ export function postPerson() {
     send(generatePerson());
 }
 
+
+
 function send(person) { // these deliberately do not use the reducer to simulate rethinkDB changefeed updates.
     axios.post('/api/user', person)
         .then(res => {
