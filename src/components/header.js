@@ -16,40 +16,45 @@ class Header extends React.Component {
             readyToReceiveNewStats: true,
             readyToReceiveNewUsers: true
         }
-        socket.on('new_user', (x) => {
-            if (this.state.readyToReceiveNewUsers) { 
-                try{
-                    this.props.getAllUsers(this.props.sort, this.props.filter);   
-                }catch(err){
-                    console.log(err);
-                }
-                console.log('new users');      
-                this.setState({ readyToReceiveNewUsers: false }, () => {
-                    setTimeout(() => {
-                        this.setState({readyToReceiveNewUsers: true});
-                    }, 2000);
-                });
-            }
+        socket.on('test', (x)=>{
+            console.log('socket io!!!')
         })
 
-        // Only get the newest data every 2000 ms.
-        // The delay is 2000ms because the realtime graph tickrate is 2000ms. 
-        socket.on('new_stats', (x) => {
-            if (this.state.readyToReceiveNewStats) { 
-                //this.props.updateLatest();
-                try{
-                    this.props.updateLatest(); 
-                }catch(err){
-                    console.log(err);
-                }
-                console.log('new stats');    
-                this.setState({ readyToReceiveNewStats: false }, () => {
-                    setTimeout(() => {
-                        this.setState({readyToReceiveNewStats: true});
-                    }, 2000);
-                });
-            }
-        })
+
+        // socket.on('new_user', (x) => {
+        //     if (this.state.readyToReceiveNewUsers) { 
+        //         try{
+        //             this.props.getAllUsers(this.props.sort, this.props.filter);   
+        //         }catch(err){
+        //             console.log(err);
+        //         }
+        //         console.log('new users');      
+        //         this.setState({ readyToReceiveNewUsers: false }, () => {
+        //             setTimeout(() => {
+        //                 this.setState({readyToReceiveNewUsers: true});
+        //             }, 2000);
+        //         });
+        //     }
+        // })
+
+        // // Only get the newest data every 2000 ms.
+        // // The delay is 2000ms because the realtime graph tickrate is 2000ms. 
+        // socket.on('new_stats', (x) => {
+        //     if (this.state.readyToReceiveNewStats) { 
+        //         //this.props.updateLatest();
+        //         try{
+        //             this.props.updateLatest(); 
+        //         }catch(err){
+        //             console.log(err);
+        //         }
+        //         console.log('new stats');    
+        //         this.setState({ readyToReceiveNewStats: false }, () => {
+        //             setTimeout(() => {
+        //                 this.setState({readyToReceiveNewStats: true});
+        //             }, 2000);
+        //         });
+        //     }
+        // })
     }
     componentDidMount() {
         socket.emit('new_client');

@@ -47,6 +47,7 @@ connectToDB().then(() => {
         }
         cursor.each((err, change) => {
             updateStats();
+            io.emit('test');
             axios.get('https://desolate-scrubland-86860.herokuapp.com/renew')
                 .then(res => null)
                 .catch(error => console.log("axios error"));

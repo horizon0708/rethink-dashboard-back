@@ -19,6 +19,7 @@ export function updateOneTick(latest) {
 
 export function updateLatest() {
     return dispatch => {
+        console.log(`======== update latest =======`)
         axios.get('/api/lateststats')
             .then(res => {
                 dispatch({ type: "UPDATE_LATEST", payload: res.data })
