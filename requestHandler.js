@@ -15,7 +15,7 @@ function handleRender(req, res) {
 
     waterfall([
         function(cb){
-            axios.get('http://localhost:3002/api/user')
+            axios.get('https://desolate-scrubland-86860.herokuapp.com/api/user')
             .then(function(response){
                 userInit  = {"users":  response.data.data, 'filter':'age_ge_18&age_le_100', 'sort':'joindate_desc'};
                 cb();
@@ -26,7 +26,7 @@ function handleRender(req, res) {
             });
         },
         function(cb){
-            axios.get('http://localhost:3002/api/lateststats')
+            axios.get('https://desolate-scrubland-86860.herokuapp.com/api/lateststats')
             .then(function(response){
                 statsInit = {"latest": response.data};
                 cb();
