@@ -3,6 +3,7 @@ import React from 'react';
 import C3Donut from './c3Donut';
 import C3RealTime from './c3RealTime';
 import UserGenerateButton from './userGenerateButton';
+import UserDashboardAbout from './userDashboardAbout';
 
 class UserDashboard extends React.Component {
     render() {
@@ -33,7 +34,7 @@ class UserDashboard extends React.Component {
                             </Col>
                             <Col xs={12} sm={4}>
                                 <Panel>
-
+                                        <UserDashboardAbout />
                                 </Panel>
                             </Col>
                         </Row>

@@ -15,10 +15,6 @@ class UserListTable extends React.Component {
         }
     }
 
-    // --- Lifecycle ---
-    componentDidMount() {
-    }
-
     // --- Handle ---
     handleHeadClick(rowname, rownameTwo) {
         this.setState({ orderBy: this.state.orderBy === 'asc' ? 'desc' : 'asc' }, () => {
