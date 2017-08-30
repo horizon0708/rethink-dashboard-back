@@ -7,7 +7,7 @@ import { getAllUsers } from '../actions/usersActions';
 import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
 
 import io from 'socket.io-client';
-var socket = io('https://localhost:3002/');
+var socket = io('http://localhost:3002');
 
 class Header extends React.Component {
     constructor(props) {

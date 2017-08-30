@@ -18,6 +18,15 @@ var requestHandler = require('./requestHandler');
 var server = require('http').Server(app);
 var io = require('socket.io')(server,{origins: "*:*"});
 
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', "*");
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  next();
+}
+);
+
 io.on('connection', function(socket){
   console.log('connect sc');
 })
@@ -35,13 +44,14 @@ app.use('/api', function(req,res){
   apiProxy.web(req, res);
 })
 
-
-
 // --- socket io
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
+
 app.get('/renew', function(req,res){
   //console.log(req);
   //console.log(req.body);
