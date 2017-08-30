@@ -43,8 +43,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.get('/renew', function(req,res){
-  //console.log(req);
-  //console.log(req.body);
   io.emit('new_user', {x: 'test'});
   console.log('new_user');
   res.json({success: true});

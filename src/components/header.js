@@ -7,7 +7,7 @@ import { getAllUsers } from '../actions/usersActions';
 import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
 
 import io from 'socket.io-client';
-var socket = io('https://desolate-scrubland-86860.herokuapp.com:3002');
+var socket = io('https://desolate-scrubland-86860.herokuapp.com');
 
 class Header extends React.Component {
     constructor(props) {
