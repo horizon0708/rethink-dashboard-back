@@ -33,7 +33,9 @@ app.get('/socket', function (req, res) {
 })
 
 // --
-
+io.on('connection', function(socket){
+    console.log('===== 3001 ======');
+  })
 
 var connection = null;
 var testDB = r.db('test');
@@ -301,4 +303,6 @@ app.listen(3001, function (err) {
     }
     console.log('API Server is listening on http://localhost:3001');
 })
+
+
 module.exports = app;
