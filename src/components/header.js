@@ -32,7 +32,7 @@ class Header extends React.Component {
         // The delay is 2000ms because the realtime graph tickrate is 2000ms. 
         socket.on('new_stats', (x) => {
             if (this.state.readyToReceiveNewStats) { 
-                //this.props.updateLatest();
+                this.props.updateLatest();
                 console.log('new stats');    
                 this.setState({ readyToReceiveNewStats: false }, () => {
                     setTimeout(() => {
