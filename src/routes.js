@@ -11,7 +11,7 @@ import AboutPage from './components/aboutPage';
 const routes = (
         <Router history={browserHistory}>
             <Route path="/" component={Main}>
-                <IndexRoute component={Dashboard} />
+                <IndexRoute component={UserList} />
                 <Route path="userlist" component={UserList} />
                 <Route path="dashboard" component={Dashboard} />
                 <Route path="about" component={AboutPage} />
