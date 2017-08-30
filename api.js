@@ -47,7 +47,7 @@ connectToDB().then(() => {
         }
         cursor.each((err, change) => {
             updateStats();
-            axios.get('http://localhost:3002/renew')
+            axios.get('https://desolate-scrubland-86860.herokuapp.com/renew')
                 .then(res => null)
                 .catch(error => console.log("axios error"));
 
@@ -56,7 +56,7 @@ connectToDB().then(() => {
     statsTable.changes().run(connection, function (err, cursor) {
         if (err) { console.log(err) };
         cursor.each((err, change) => {
-            axios.get('http://localhost:3002/renewstats')
+            axios.get('https://desolate-scrubland-86860.herokuapp.com/renewstats')
                 .then(res => null)
                 .catch(error => console.log('axios stats error'));
         })
