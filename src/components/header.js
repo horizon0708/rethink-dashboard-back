@@ -4,7 +4,7 @@ import { Nav, NavItem, Navbar, Badge } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
-import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
+import { updateLatest, initialiseArray, updateOneTick, debugAction } from '../actions/graphActions';
 
 import io from 'socket.io-client';
 var socket = io('https://desolate-scrubland-86860.herokuapp.com');
@@ -18,7 +18,11 @@ class Header extends React.Component {
         }
         socket.on('new_user', (x) => {
             if (this.state.readyToReceiveNewUsers) { 
-                this.props.getAllUsers(this.props.sort, this.props.filter);   
+                try{
+                    this.props.getAllUsers(this.props.sort, this.props.filter);   
+                }catch(err){
+                    console.log(err);
+                }
                 console.log('new users');      
                 this.setState({ readyToReceiveNewUsers: false }, () => {
                     setTimeout(() => {
@@ -80,7 +84,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ updateOneTick, updateLatest, getAllUsers, initialiseArray }, dispatch)
+    return bindActionCreators({ updateOneTick, updateLatest, getAllUsers, initialiseArray, debugAction }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

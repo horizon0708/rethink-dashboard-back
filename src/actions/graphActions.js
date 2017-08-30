@@ -34,3 +34,7 @@ export function initialiseArray(latest) {
         dispatch({ type: "INITIALISE_ARRAY", payload: latest })
     }
 }
+
+export function debugAction(){
+    return dispatch({ type: "DEBUG", payload: "DEBUG"})
+}

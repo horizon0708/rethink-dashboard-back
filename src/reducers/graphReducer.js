@@ -69,10 +69,10 @@ export function graphReducer(state = {}, action) {
                     time: []
                 }
             }
-        case "GET_PAST_DATA":
-            
+        case "DEBUG":
+            console.log("debug");
             return{
-
+                ...state
             }
     }
     return state;

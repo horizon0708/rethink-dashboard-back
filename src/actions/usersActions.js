@@ -37,6 +37,8 @@ export function updateSortOpt(sortOpt){
     }
 }
 
+
+
 export function getUniqueValues(){
     return dispatch => {
         axios.get('/api/valuelist')
