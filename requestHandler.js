@@ -33,13 +33,15 @@ function handleRender(req, res) {
             })
             .catch(function(err){
                 console.log('error loading initial stats data');
+                statsInit = {"latest": []};
                 cb();
             })
         }
     ],function(error){
         const store = createStore(reducers,{
             "users": userInit,
-            "graph": statsInit
+            "graph": statsInit,
+            "status": {generating: false, lastGeneration: null}
         });
         const initialState = JSON.stringify(store.getState()).replace(
                 /<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');

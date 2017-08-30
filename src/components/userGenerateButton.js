@@ -15,13 +15,13 @@ class UserGenerateButton extends React.Component {
             <Well>
                 <ButtonGroup>
                     <Button onClick={() => generatePeople(1, 1, 200)}>
-                        Generate 200 People
+                        Add 200 People.
                     </Button>
                     <Button onClick={() => generatePeople(1000, 3000, 25)}>
-                        Generate 25 People over sometime.
+                        Add 25 People over random delays.
                     </Button>
                     <Button onClick={() => postPerson()}>
-                        Generate A Person
+                        Add A Person
                     </Button>
                     <Button onClick={() => toggleMemberships("ENTERPRISE", 600, 20000)}> 
                         toggleMemberships

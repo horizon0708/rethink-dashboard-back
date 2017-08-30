@@ -40,6 +40,7 @@ function changeMembership(id, membership) {
         });
 }
 
+
 export function toggleMemberships(membership, targetNumber, totalDuration) {
     let userCount, difference;
     let userIds = [];

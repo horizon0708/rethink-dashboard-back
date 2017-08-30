@@ -2,14 +2,12 @@ import webpack from 'webpack';
 import path from 'path';
 
 const GLOBALS = {
-    'process.env.NODE_ENV': JSON.stringify('production');
+    'process.env.NODE_ENV': JSON.stringify('production')
 }
 
 export default {
-    debug: true,
     devtool: 'source-map',
-    noInfo: false,
-    entry: './src/index',
+    entry: './src/client.js',
     target: 'web',
     output: {
         path: __dirname + '/dist',

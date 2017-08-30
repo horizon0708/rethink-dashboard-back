@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "start": "node ./bin/www & node api.js"
+    "start": "node ./bin/www & node api.js",
+    "build": "babel-node scripts/build.js"
   },
   "dependencies": {
     "async": "^2.5.0",
     "axios": "^0.16.2",
     "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
