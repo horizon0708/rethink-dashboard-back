@@ -1,6 +1,6 @@
 {
   "name": "rethink-dashboard-back",
-  "engines" : {
+  "engines": {
     "node": "8.1.4"
   },
   "version": "0.0.0",
@@ -57,6 +57,7 @@
     "reselect": "^3.0.1",
     "rethinkdb": "^2.3.3",
     "serve-favicon": "~2.4.2",
+    "socket.io": "^2.0.3",
     "socketio": "^1.0.0",
     "style-loader": "^0.18.2",
     "webpack": "^3.4.1"

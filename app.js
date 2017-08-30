@@ -7,16 +7,16 @@ require.extensions['.css'] = () => {
 
 var express = require('express');
 var path = require('path');
-//var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var app = express();
 var requestHandler = require('./requestHandler');
 
+
+
 //socket.io
 var server = require('http').Server(app);
-var io = require('socket.io')(server,{origins: "*:*"});
 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', "*");
@@ -26,6 +26,10 @@ app.use(function (req, res, next) {
   next();
 }
 );
+
+var io = require('socket.io')(server,{origins: "*:*"});
+
+
 
 io.on('connection', function(socket){
   console.log('connect sc');
