@@ -18,7 +18,8 @@ class Header extends React.Component {
         }
         socket.on('new_user', (x) => {
             if (this.state.readyToReceiveNewUsers) { 
-                this.props.getAllUsers(this.props.sort, this.props.filter);         
+                //this.props.getAllUsers(this.props.sort, this.props.filter);   
+                console.log('new users');      
                 this.setState({ readyToReceiveNewUsers: false }, () => {
                     setTimeout(() => {
                         this.setState({readyToReceiveNewUsers: true});
@@ -31,7 +32,8 @@ class Header extends React.Component {
         // The delay is 2000ms because the realtime graph tickrate is 2000ms. 
         socket.on('new_stats', (x) => {
             if (this.state.readyToReceiveNewStats) { 
-                this.props.updateLatest();
+                //this.props.updateLatest();
+                onsole.log('new stats');    
                 this.setState({ readyToReceiveNewStats: false }, () => {
                     setTimeout(() => {
                         this.setState({readyToReceiveNewStats: true});
