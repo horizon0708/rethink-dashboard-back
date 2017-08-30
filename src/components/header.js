@@ -18,7 +18,7 @@ class Header extends React.Component {
         }
         socket.on('new_user', (x) => {
             if (this.state.readyToReceiveNewUsers) { 
-                //this.props.getAllUsers(this.props.sort, this.props.filter);   
+                this.props.getAllUsers(this.props.sort, this.props.filter);   
                 console.log('new users');      
                 this.setState({ readyToReceiveNewUsers: false }, () => {
                     setTimeout(() => {
