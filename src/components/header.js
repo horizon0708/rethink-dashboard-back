@@ -7,7 +7,7 @@ import { getAllUsers } from '../actions/usersActions';
 import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
 
 import io from 'socket.io-client';
-var socket = io('https://desolate-scrubland-86860.herokuapp.com/');
+var socket = io('localhost:3002');
 
 class Header extends React.Component {
     constructor(props) {
@@ -17,7 +17,6 @@ class Header extends React.Component {
             readyToReceiveNewUsers: true
         }
         socket.on('new_user', (x) => {
-            console.log('renew?');
             if (this.state.readyToReceiveNewUsers) { 
                 this.props.getAllUsers(this.props.sort, this.props.filter);         
                 this.setState({ readyToReceiveNewUsers: false }, () => {
