@@ -39,9 +39,9 @@ class UserDashboardAbout extends Component {
     }
 
     render() {
-        const allUsers= this.props.latest[0].age_ge_18;
-        const proUsers= this.props.latest[0].membership_eq_PRO;
-        const entUsers= this.props.latest[0].membership_eq_ENTERPRISE;
+        const allUsers= this.props.latest[0] ? this.props.latest[0].age_ge_18 : 0;
+        const proUsers= this.props.latest[0] ? this.props.latest[0].membership_eq_PRO :0;
+        const entUsers= this.props.latest[0] ? this.props.latest[0].membership_eq_ENTERPRISE: 0;
 
         return (
             <div>
