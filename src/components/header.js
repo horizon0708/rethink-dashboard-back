@@ -6,10 +6,8 @@ import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
 import { updateLatest, initialiseArray, updateOneTick } from '../actions/graphActions';
 
-
-
 import io from 'socket.io-client';
-var socket = io('http://localhost:3002/');
+var socket = io('https://localhost:3002/');
 
 class Header extends React.Component {
     constructor(props) {
@@ -62,13 +60,11 @@ class Header extends React.Component {
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
-                    <Nav>
+                    <Nav pullRight>
                         <NavItem eventKey={1} href='/about'>About</NavItem>
                         <NavItem eventKey={2} href='/dashboard'>Dashboard</NavItem>
                         <NavItem eventKey={3} href='/userlist'>User List</NavItem>
-                    </Nav>
-                    <Nav pullRight>
-                        <NavItem eventKey={1} href='/admin'>Admin</NavItem>
+                        <NavItem eventKey={4} href='https://github.com/horizon0708/rethink-dashboard-back'>Github</NavItem>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

@@ -37,23 +37,16 @@ class UserDashboardAbout extends Component {
             {50 >= this.props.latest[0].membership_eq_PRO / this.props.latest[0].age_ge_18 * 100? "Increase Pro users" : "Increase Enterprise users"}
         </Button>        
     }
-    // going to be lazy and just copy paste functions
-
-    renderGenerateButton(){
-        if (this.props.status) {
-            console.log(this.props.status)
-            return <Button disabled>
-            Toggling National Allegiance...
-        </Button>
-        }
-        return <Button onClick={this.toggleGeneration}>
-            {50 >= this.props.latest[0].membership_eq_PRO / this.props.latest[0].age_ge_18 * 100? "Switch Aussies to Kiwis" : "Switch Kiwis to Aussies"}
-        </Button>        
-    }
 
     render() {
+        const allUsers= this.props.latest[0].age_ge_18;
+        const proUsers= this.props.latest[0].membership_eq_PRO;
+        const entUsers= this.props.latest[0].membership_eq_ENTERPRISE;
+
         return (
             <div>
+                <p>Hi there! We currently have <strong>{allUsers}</strong> users. <strong>{entUsers}</strong> are enterprise users. <strong>{proUsers}</strong> are pro users. Projected Monthly Revenue is: <strong>${proUsers*6 + entUsers*25}</strong>.</p>
+                <p>Click the button below to change the numbers up!</p>
                 {this.renderGenerateButton()}
             </div>
         );

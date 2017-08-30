@@ -11,7 +11,7 @@ import routes from './routes';
 
 
 //create store
-const middleware = applyMiddleware(thunk, logger);
+const middleware = applyMiddleware(thunk);
 const initialState = window.INITIAL_STATE;
 const store = createStore(reducers, initialState, middleware);
 

@@ -80,7 +80,6 @@ class UserDashboard extends React.Component {
                             </Col>
                         </Row>
                     </Col>
-                    <UserGenerateButton />
                 </Row>
         )
     }

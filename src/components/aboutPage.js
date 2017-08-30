@@ -9,7 +9,6 @@ class About extends React.Component {
             <Row style={{marginTop: '100px'}}>
                 <Col smOffset={1} sm={10}>
                     <Panel>
-                     <h1>About</h1>
 
         <h1 id="whatisthis">What is this?</h1>
 
@@ -27,7 +26,7 @@ class About extends React.Component {
 
         <p>Whenever there is a change in the RethinkDB, socket.io will trigger an action. This action fetches data using Redux-Thunk and Axios to update the store. This action can only happen once every 2 seconds for optimisation. Since the real-time timeseries graph gets updated every 2 seconds, there is no need to flood the server with AJAX calls every millisecond if there has been a huge influx or change of users.</p>
 
-        <p>The donut graphs only re-renders when there are differences between the  current props and the next props in <code>componentWillReceiveProps</code>, again, for optimisation.</p>
+        <p>The donut graphs only re-renders when there are differences between the  current props and the next props in <code>componentWillReceiveProps</code> for optimisation.</p>
 
         <p>Both time-series graph and the donuts are reusable components. </p>
 

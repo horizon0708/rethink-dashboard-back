@@ -122,9 +122,6 @@ class UserListFilter extends React.Component {
                     <Button onClick={this.handleSubmit}>
                         Filter
                     </Button>
-                    <Button style={{ alignSelf: "right" }} onClick={() => this.debugButton()}>
-                        Debug
-                    </Button>
             </Well>
         )
     }
