@@ -37,6 +37,11 @@ class Header extends React.Component {
         socket.on('new_stats', (x) => {
             if (this.state.readyToReceiveNewStats) { 
                 //this.props.updateLatest();
+                try{
+                    this.props.updateLatest(); 
+                }catch(err){
+                    console.log(err);
+                }
                 console.log('new stats');    
                 this.setState({ readyToReceiveNewStats: false }, () => {
                     setTimeout(() => {
