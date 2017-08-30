@@ -16,7 +16,7 @@ var requestHandler = require('./requestHandler');
 
 //socket.io
 var server = require('http').Server(app);
-var io = require('socket.io')(server,{origins: "localhost:3002"});
+var io = require('socket.io')(server,{origins: "*:*"});
 
 io.on('connection', function(socket){
   console.log('connect sc');
