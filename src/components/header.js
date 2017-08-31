@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllUsers } from '../actions/usersActions';
 import { updateLatest, initialiseArray, updateOneTick, debugAction } from '../actions/graphActions';
-import { LinkContainer } from 'react-router-bootstrap';
 
 import io from 'socket.io-client';
 var socket = io('https://rethink-dashboard.herokuapp.com');
@@ -20,16 +19,16 @@ class Header extends React.Component {
         }
 
         socket.on('new_user', (x) => {
-            if (this.state.readyToReceiveNewUsers) {
-                try {
-                    this.props.getAllUsers(this.props.sort, this.props.filter);
-                } catch (err) {
+            if (this.state.readyToReceiveNewUsers) { 
+                try{
+                    this.props.getAllUsers(this.props.sort, this.props.filter);   
+                }catch(err){
                     console.log(err);
                 }
-                console.log('new users');
+                console.log('new users');      
                 this.setState({ readyToReceiveNewUsers: false }, () => {
                     setTimeout(() => {
-                        this.setState({ readyToReceiveNewUsers: true });
+                        this.setState({readyToReceiveNewUsers: true});
                     }, 2000);
                 });
             }
@@ -38,17 +37,17 @@ class Header extends React.Component {
         // Only get the newest data every 2000 ms.
         // The delay is 2000ms because the realtime graph tickrate is 2000ms. 
         socket.on('new_stats', (x) => {
-            if (this.state.readyToReceiveNewStats) {
+            if (this.state.readyToReceiveNewStats) { 
                 //this.props.updateLatest();
-                try {
-                    this.props.updateLatest();
-                } catch (err) {
+                try{
+                    this.props.updateLatest(); 
+                }catch(err){
                     console.log(err);
                 }
-                console.log('new stats');
+                console.log('new stats');    
                 this.setState({ readyToReceiveNewStats: false }, () => {
                     setTimeout(() => {
-                        this.setState({ readyToReceiveNewStats: true });
+                        this.setState({readyToReceiveNewStats: true});
                     }, 2000);
                 });
             }
@@ -74,15 +73,9 @@ class Header extends React.Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav pullRight>
-                        <LinkContainer to="/about">
-                            <NavItem eventKey={1}>About</NavItem>
-                        </LinkContainer>
-                        <LinkContainer to="/dashboard">
-                            <NavItem eventKey={2}>Dashboard</NavItem>
-                        </LinkContainer>
-                        <LinkContainer to="/userlist">
-                            <NavItem eventKey={3}>User List</NavItem>
-                        </LinkContainer>
+                        <NavItem eventKey={1} href='/about'>About</NavItem>
+                        <NavItem eventKey={2} href='/dashboard'>Dashboard</NavItem>
+                        <NavItem eventKey={3} href='/userlist'>User List</NavItem>
                         <NavItem eventKey={4} href='https://github.com/horizon0708/rethink-dashboard-back'>Github</NavItem>
                     </Nav>
                 </Navbar.Collapse>
