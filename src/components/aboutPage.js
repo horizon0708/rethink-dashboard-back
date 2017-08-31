@@ -36,7 +36,7 @@ class About extends React.Component {
 
         <p>[ ] Paginations for userlist - it's currently capped at 200.</p>
         <p>[ ] search feature for userlist.</p>
-                        
+        <p>[ ] write a better About page </p>          
 
                     </Panel>
                 </Col>
